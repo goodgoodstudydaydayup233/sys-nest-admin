@@ -1,0 +1,124 @@
+/**
+ * 全局 CSS 变量 - 浅色主题（Light Theme）
+ * @description 定义浅色模式下的所有颜色、间距、字体等设计令牌
+ * @usage 在 :root 或 [data-theme="light"] 下自动生效
+ */
+
+:root,
+[data-theme='light'] {
+  /* ==================== 主色调 ==================== */
+  --color-primary: #409eff;
+  --color-primary-light-9: #ecf5ff;
+  --color-primary-light-8: #d9ecff;
+  --color-primary-light-7: #c6e2ff;
+  --color-primary-light-5: #a0cfff;
+  --color-primary-light-3: #79bbff;
+  --color-primary-dark-2: #337ecc;
+
+  /* ==================== 成功色 ==================== */
+  --color-success: #67c23a;
+  --color-success-light-9: #f0f9eb;
+  --color-success-light-8: #e1f3d8;
+  --color-success-light-5: #b3e19d;
+  --color-success-dark-2: #529b2e;
+
+  /* ==================== 警告色 ==================== */
+  --color-warning: #e6a23c;
+  --color-warning-light-9: #fdf6ec;
+  --color-warning-light-8: #faecd8;
+  --color-warning-light-5: #eebe77;
+  --color-warning-dark-2: #b88230;
+
+  /* ==================== 危险色 ==================== */
+  --color-danger: #f56c6c;
+  --color-danger-light-9: #fef0f0;
+  --color-danger-light-8: #fde2e2;
+  --color-danger-light-5: #fab6b6;
+  --color-danger-dark-2: #c45656;
+
+  /* ==================== 信息色 ==================== */
+  --color-info: #909399;
+  --color-info-light-9: #f4f4f5;
+  --color-info-light-8: #e9e9eb;
+  --color-info-light-5: #c8c9cc;
+  --color-info-dark-2: #73767a;
+
+  /* ==================== 布局背景色 ==================== */
+  --bg-color-page: #ffffff; /* 页面整体背景 */
+  --bg-color-base: #ffffff; /* 卡片/容器背景 */
+  --bg-color-overlay: rgba(255, 255, 255, 0.9); /* 遮罩层背景 */
+
+  /* ==================== 侧边栏颜色 ==================== */
+  --sidebar-bg-color: #304156; /* 侧边栏背景 */
+  --sidebar-text-color: #bfcbd9; /* 侧边栏文字 */
+  --sidebar-active-text-color: #409eff; /* 侧边栏激活文字 */
+  --sidebar-hover-bg-color: #263445; /* 侧边栏悬停背景 */
+  --sidebar-active-bg-color: #263445; /* 侧边栏激活背景 */
+  --sidebar-logo-bg-color: #263445; /* Logo区域背景 */
+  --sidebar-width: 210px; /* 侧边栏展开宽度 */
+  --sidebar-collapsed-width: 64px; /* 侧边栏折叠宽度 */
+
+  /* ==================== 导航栏颜色 ==================== */
+  --navbar-bg-color: #ffffff; /* 导航栏背景 */
+  --navbar-text-color: #606266; /* 导航栏文字 */
+  --navbar-border-color: #dcdfe6; /* 导航栏底边框 */
+  --navbar-height: 50px; /* 导航栏高度 */
+
+  /* ==================== 文字颜色 ==================== */
+  --text-color-primary: #303133; /* 主要文字 */
+  --text-color-regular: #606266; /* 常规文字 */
+  --text-color-secondary: #909399; /* 次要文字 */
+  --text-color-placeholder: #c0c4cc; /* 占位符文字 */
+
+  /* ==================== 边框颜色 ==================== */
+  --border-color-base: #dcdfe6; /* 基础边框 */
+  --border-color-light: #e4e7ed; /* 浅色边框 */
+  --border-color-lighter: #ebeef5; /* 更浅边框 */
+  --border-color-extra-light: #f2f6fc; /* 极浅边框 */
+
+  /* ==================== 阴影效果 ==================== */
+  --shadow-base: 0 2px 12px 0 rgba(0, 0, 0, 0.1); /* 基础阴影 */
+  --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.06), 0 0 6px rgba(0, 0, 0, 0.04); /* 浅阴影 */
+  --shadow-dark: 0 4px 16px rgba(0, 0, 0, 0.12), 0 0 12px rgba(0, 0, 0, 0.08); /* 深阴影 */
+
+  /* ==================== 圆角大小 ==================== */
+  --border-radius-base: 4px; /* 基础圆角 */
+  --border-radius-small: 2px; /* 小圆角 */
+  --border-radius-round: 20px; /* 圆形按钮圆角 */
+  --border-radius-circle: 100%; /* 完全圆形 */
+
+  /* ==================== 字体设置 ==================== */
+  --font-family:
+    'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑',
+    Arial, sans-serif;
+  --font-size-extra-large: 20px; /* 特大号字体 */
+  --font-size-large: 18px; /* 大号字体 */
+  --font-size-medium: 16px; /* 中等字体 */
+  --font-size-base: 14px; /* 基础字体 */
+  --font-size-small: 13px; /* 小号字体 */
+  --font-size-extra-small: 12px; /* 特小号字体 */
+  --font-weight-primary: 500; /* 主要字重 */
+  --font-weight-bold: 700; /* 加粗字重 */
+
+  /* ==================== 间距系统 ==================== */
+  --spacing-xs: 4px; /* 极小间距 */
+  --spacing-sm: 8px; /* 小间距 */
+  --spacing-md: 16px; /* 中间距 */
+  --spacing-lg: 24px; /* 大间距 */
+  --spacing-xl: 32px; /* 特大间距 */
+
+  /* ==================== 过渡动画 ==================== */
+  --transition-duration-fast: 0.15s; /* 快速过渡 */
+  --transition-duration-base: 0.3s; /* 基础过渡 */
+  --transition-duration-slow: 0.5s; /* 慢速过渡 */
+  --transition-timing: cubic-bezier(0.645, 0.045, 0.355, 1);
+
+  /* ==================== 层级关系 ==================== */
+  --z-index-dropdown: 1000; /* 下拉菜单层级 */
+  --z-index-sticky: 1020; /* 吸顶/吸底层级 */
+  --z-index-fixed: 1030; /* 固定定位层级 */
+  --z-index-modal-backdrop: 1040; /* 模态框遮罩层级 */
+  --z-index-modal: 1050; /* 模态框层级 */
+  --z-index-popover: 1060; /* 弹出框层级 */
+  --z-index-tooltip: 1070; /* 提示框层级 */
+}

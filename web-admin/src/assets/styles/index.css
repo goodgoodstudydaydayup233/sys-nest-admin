@@ -1,0 +1,106 @@
+/**
+ * 全局基础样式覆盖
+ * @description 参考若依/nest-admin 前端风格：
+ *   1. el-table 仅保留行间分隔线（横线），移除竖向列分隔线
+ *   2. 搜索区不再使用 el-card 包裹，改用 .search-bar 扁平样式
+ *
+ * @生效范围 全局所有页面（在 main.ts 中引入）
+ */
+
+/* ==================== el-table 样式调整 ==================== */
+
+/**
+ * 移除表格竖向分隔线（列边框）
+ * - 即使 el-table 开启了 border 属性，也强制隐藏竖线
+ * - 保留行间分隔线（border-bottom）实现"仅行间存在间隔线"的若依风格
+ */
+.el-table__cell {
+  border-right: none !important;
+}
+
+/* 移除 Element Plus 2.2+ 用于模拟列分隔线的伪元素 */
+.el-table__cell::after {
+  display: none !important;
+}
+
+/* 固定列（fixed）同样移除竖线，避免左右固定列出现残留竖线 */
+.el-table__fixed-right .el-table__cell,
+.el-table__fixed-left .el-table__cell {
+  border-right: none !important;
+}
+
+/* 移除 border 模式下表头底部的多余双线，保留单条行间分隔线 */
+.el-table--border .el-table__inner-wrapper::after,
+.el-table--border::after,
+.el-table--border::before {
+  display: none !important;
+}
+
+/**
+ * 表头淡灰色背景（若依/nest-admin 风格）
+ * - 表头背景色 #f8f8f8，字色 #666，字重 600
+ * - 同时兼容浅色模式与默认模式
+ */
+.el-table .el-table__header-wrapper .el-table__cell,
+.el-table .el-table__header-wrapper th.el-table__cell {
+  background-color: #f8f8f8 !important;
+  color: #666 !important;
+  font-weight: 600 !important;
+}
+
+/* 暗色主题下表头颜色回调 */
+html.dark .el-table .el-table__header-wrapper .el-table__cell,
+html.dark .el-table .el-table__header-wrapper th.el-table__cell {
+  background-color: var(--el-table-header-bg-color, #1d1e1f) !important;
+  color: var(--el-text-color-regular, #cfd3dc) !important;
+}
+
+/**
+ * 分页容器统一样式（若依/nest-admin 风格）
+ * - 右对齐
+ * - 上下留白 16px
+ * - 无背景、无边框
+ *
+ * @使用示例
+ * ```html
+ * <div class="pagination-wrapper">
+ *   <el-pagination ... />
+ * </div>
+ * ```
+ */
+.pagination-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 16px 0;
+}
+
+/* 分页组件本身去除 Element 默认背景，紧凑显示 */
+.pagination-wrapper .el-pagination {
+  --el-pagination-bg-color: transparent;
+  --el-pagination-hover-color: var(--el-color-primary);
+  padding: 0;
+}
+
+/* ==================== 搜索区 .search-bar 样式 ==================== */
+
+/**
+ * 搜索区扁平样式（替代 el-card 包裹）
+ * - 无背景、无边框、无阴影
+ * - 仅保留底部间距，与表格区形成视觉分隔
+ *
+ * @使用示例
+ * ```html
+ * <div class="search-bar">
+ *   <el-form :model="queryParams" inline> ... </el-form>
+ * </div>
+ * ```
+ */
+.search-bar {
+  padding: 0 0 16px;
+}
+
+/* 搜索表单末行底部多余间距收敛 */
+.search-bar .el-form--inline .el-form-item {
+  margin-bottom: 8px;
+}

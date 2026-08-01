@@ -1,0 +1,90 @@
+/**
+ * 全局 CSS 变量 - 深色主题（Dark Theme）
+ * @description 定义深色模式下的所有颜色、间距、字体等设计令牌
+ * @usage 在 [data-theme="dark"] 或 html.dark 下自动生效
+ * @note 仅覆盖与浅色主题不同的变量，其余继承默认值
+ */
+
+[data-theme='dark'] {
+  /* ==================== 主色调（保持不变）==================== */
+  --color-primary: #409eff;
+  --color-primary-light-9: #1a3a5c;
+  --color-primary-light-8: #234a73;
+  --color-primary-light-7: #2d5a8a;
+  --color-primary-light-5: #4075a8;
+  --color-primary-light-3: #5590c2;
+  --color-primary-dark-2: #66b1ff;
+  
+  /* ==================== 成功色 ==================== */
+  --color-success: #67c23a;
+  --color-success-light-9: #1d3a1a;
+  --color-success-light-8: #274822;
+  --color-success-light-5: #3a6833;
+  --color-success-dark-2: #85ce61;
+  
+  /* ==================== 警告色 ==================== */
+  --color-warning: #e6a23c;
+  --color-warning-light-9: #3d3015;
+  --color-warning-light-8: #4d3c1b;
+  --color-warning-light-5: #6b552a;
+  --color-warning-dark-2: #ebb563;
+  
+  /* ==================== 危险色 ==================== */
+  --color-danger: #f56c6c;
+  --color-danger-light-9: #3d1c1c;
+  --color-danger-light-8: #4e2525;
+  --color-danger-light-5: #703838;
+  --color-danger-dark-2: #f78989;
+  
+  /* ==================== 信息色 ==================== */
+  --color-info: #909399;
+  --color-info-light-9: #2a2a2e;
+  --color-info-light-8: #36363a;
+  --color-info-light-5: #505057;
+  --color-info-dark-2: #a6a9ad;
+
+  /* ==================== 布局背景色（深色核心）==================== */
+  --bg-color-page: #141414;              /* 页面整体背景（深黑）*/
+  --bg-color-base: #1d1e1f;              /* 卡片/容器背景（深灰）*/
+  --bg-color-overlay: rgba(29, 30, 31, 0.95); /* 遮罩层背景 */
+  
+  /* ==================== 侧边栏颜色 ==================== */
+  --sidebar-bg-color: #1d1e1f;            /* 侧边栏背景 */
+  --sidebar-text-color: #bfcbd9;          /* 侧边栏文字（保持不变）*/
+  --sidebar-active-text-color: #409eff;   /* 侧边栏激活文字 */
+  --sidebar-hover-bg-color: #262727;      /* 侧边栏悬停背景 */
+  --sidebar-active-bg-color: #262727;     /* 侧边栏激活背景 */
+  --sidebar-logo-bg-color: #18191a;       /* Logo区域背景 */
+  --sidebar-width: 210px;
+  --sidebar-collapsed-width: 64px;
+  
+  /* ==================== 导航栏颜色 ==================== */
+  --navbar-bg-color: #1d1e1f;             /* 导航栏背景 */
+  --navbar-text-color: #e5eaf3;           /* 导航栏文字（提亮）*/
+  --navbar-border-color: #2c2e30;         /* 导航栏底边框（暗化）*/
+  --navbar-height: 50px;
+  
+  /* ==================== 文字颜色（深色核心）==================== */
+  --text-color-primary: #e5eaf3;          /* 主要文字（亮白）*/
+  --text-color-regular: #cfd3dc;          /* 常规文字 */
+  --text-color-secondary: #a3a6ad;        /* 次要文字 */
+  --text-color-placeholder: #6c6e72;      /* 占位符文字 */
+  
+  /* ==================== 边框颜色 ==================== */
+  --border-color-base: #414243;           /* 基础边框 */
+  --border-color-light: #363637;          /* 浅色边框 */
+  --border-color-lighter: #2c2d2f;        /* 更浅边框 */
+  --border-color-extra-light: #252526;    /* 极浅边框 */
+  
+  /* ==================== 阴影效果（深色优化）==================== */
+  --shadow-base: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
+  --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.15), 
+                   0 0 6px rgba(0, 0, 0, 0.1);
+  --shadow-dark: 0 4px 16px rgba(0, 0, 0, 0.4), 
+                 0 0 12px rgba(0, 0, 0, 0.25);
+  
+  /* ==================== 其他调整 ==================== */
+  /* 圆角和字体在深色模式下通常保持不变 */
+  /* 间距系统在深色模式下保持不变 */
+  /* 过渡动画在深色模式下保持不变 */
+}

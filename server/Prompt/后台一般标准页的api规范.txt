@@ -1,0 +1,871 @@
+# 通用后台管理系统 —— NestJS 后端接口开发规范
+
+## 一、项目概述
+
+技术栈：NestJS + TypeORM + MySQL + Swagger + bcrypt + JWT + class-validator + class-transformer
+包管理：pnpm
+代码规范：ESLint + Prettier，不添加多余注释（除非用户要求）
+构建校验：修改完成后执行 pnpm build
+
+### 全局路由前缀
+所有接口统一加 `/admin` 前缀。
+
+### 统一响应格式（TransformInterceptor 自动包装）
+Controller 中的接口方法直接返回数据即可，无需手动包装。
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "data": { ... }
+}
+```
+字段说明：
+- code：状态码（成功 200，业务异常为自定义错误码，HTTP 异常为 HTTP 状态码）
+- msg：提示信息
+- data：接口返回的数据
+
+### 统一异常响应格式（BusinessExceptionFilter / HttpExceptionFilter 自动处理）
+```json
+{
+  "code": 1001,
+  "msg": "错误信息",
+  "data": null
+}
+```
+
+---
+
+## 二、模块文件结构
+
+新建一个业务模块 `{module}` 时，按以下结构组织：
+
+
+
+---
+
+## 三、公共基类
+
+### BaseEntity（所有实体继承）
+```typescript
+// src/common/entities/base.entity.ts
+export abstract class BaseEntity {
+  @PrimaryGeneratedColumn({ comment: 'ID' })
+  id: number;
+
+  @Column({ type: 'char', length: 1, default: '0', comment: '删除状态: 0-未删除 1-已删除' })
+  deleteStatus: string;
+
+  @Column({ type: 'char', length: 1, default: '0', comment: '禁用状态: 0-启用 1-禁用' })
+  disabled: string;
+
+  @Column({ length: 50, nullable: true, comment: '创建者' })
+  createdBy: string;
+
+  @Column({ length: 50, nullable: true, comment: '更新者' })
+  updatedBy: string;
+
+  @CreateDateColumn({ comment: '创建时间' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ comment: '更新时间' })
+  updatedAt: Date;
+}
+```
+
+### BaseVo（所有 VO 继承，自动包含 id、createdAt、updatedAt）
+```typescript
+// src/common/vo/base.vo.ts
+export class BaseVo {
+  @ApiProperty({ description: 'ID' })
+  id: number;
+
+  @ApiProperty({ description: '创建时间' })
+  createdAt: Date;
+
+  @ApiProperty({ description: '更新时间' })
+  updatedAt: Date;
+}
+```
+
+### BasePaginationDto（所有查询 DTO 继承）
+```typescript
+// src/common/dto/base.dto.ts
+export class BasePaginationDto {
+  @ApiPropertyOptional({ description: '页码', default: 1 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page?: number = 1;
+
+  @ApiPropertyOptional({ description: '每页条数', default: 10 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  pageSize?: number = 10;
+}
+```
+
+---
+
+## 四、错误码规范
+
+### 错误码分段规则
+```typescript
+// src/common/enums/error-code.enum.ts
+export enum ErrorCodeEnum {
+  SUCCESS = 200,
+  BAD_REQUEST = 400,
+  UNAUTHORIZED = 401,
+  FORBIDDEN = 403,
+  NOT_FOUND = 404,
+  INTERNAL_ERROR = 500,
+
+  // 1xxx - 用户相关
+  USER_NOT_FOUND = 1001,
+  USER_PASSWORD_ERROR = 1002,
+  USER_DISABLED = 1003,
+  USER_ALREADY_EXISTS = 1004,
+  USER_CANNOT_DELETE_ADMIN = 1005,
+
+  // 2xxx - 验证码相关
+  CAPTCHA_EXPIRED = 2001,
+  CAPTCHA_ERROR = 2002,
+
+  // 3xxx - Token 相关
+  TOKEN_EXPIRED = 3001,
+  TOKEN_INVALID = 3002,
+
+  // 4xxx - 权限相关
+  NO_PERMISSION = 4001,
+  ROLE_NOT_FOUND = 4002,
+
+  // 5xxx - 参数相关
+  PARAM_ERROR = 5001,
+
+  // 6xxx - 配置相关
+  CONFIG_NOT_FOUND = 6001,
+}
+```
+
+新增模块错误码时，按分段规则扩展（如 7xxx、8xxx），并同步在 ErrorMessageMap 中添加映射。
+
+### 抛错方式
+```typescript
+import { BusinessException } from '../../common/exceptions/business.exception';
+import { ErrorCodeEnum } from '../../common/enums/error-code.enum';
+
+throw new BusinessException('错误描述', ErrorCodeEnum.XXX);
+```
+
+---
+
+## 五、Entity 实体规范
+
+### 命名与结构
+- 文件名：`{module}.entity.ts`
+- 类名：PascalCase
+- 表名：`sys_{module}`（如 sys_user、sys_role）
+- 必须继承 BaseEntity
+- 每个字段必须有 `comment` 注释
+- 软删除字段由 BaseEntity 提供（deleteStatus），无需额外定义
+
+### 实体示例（通用模板）
+```typescript
+import { Entity, Column } from 'typeorm';
+import { BaseEntity } from '../../../common/entities/base.entity';
+
+@Entity('sys_xxx')
+export class Xxx extends BaseEntity {
+  @Column({ length: 50, unique: true, comment: '编码' })
+  code: string;
+
+  @Column({ length: 100, comment: '名称' })
+  name: string;
+
+  @Column({ type: 'char', length: 1, default: '1', comment: '状态: 0-禁用 1-启用' })
+  status: string;
+
+  @Column({ type: 'int', default: 0, comment: '排序' })
+  sort: number;
+
+  @Column({ nullable: true, comment: '备注' })
+  remark: string;
+}
+```
+
+### 关联关系示例
+```typescript
+// 多对多
+@ManyToMany(() => Role, (role) => role.xxx)
+@JoinTable({
+  name: 'sys_xxx_role',
+  joinColumn: { name: 'xxx_id', referencedColumnName: 'id' },
+  inverseJoinColumn: { name: 'role_id', referencedColumnName: 'id' },
+})
+roles: Role[];
+
+// 多对一
+@ManyToOne(() => Parent)
+@JoinColumn({ name: 'parent_id' })
+parent: Parent;
+```
+
+---
+
+## 六、DTO 规范
+
+### CreateXxxDto（创建 DTO）
+```typescript
+import { IsString, IsNotEmpty, IsOptional, IsInt, Min } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional, ApiHideProperty } from '@nestjs/swagger';
+
+export class CreateXxxDto {
+  // 必填字段
+  @ApiProperty({ description: '名称' })
+  @IsString()
+  @IsNotEmpty({ message: '名称不能为空' })
+  name: string;
+
+  // 可选字段
+  @ApiPropertyOptional({ description: '备注' })
+  @IsString()
+  @IsOptional()
+  remark?: string;
+
+  // 后端内部设置的字段（如文件上传 URL），Swagger 中隐藏
+  @ApiHideProperty()
+  avatar?: string;
+
+  // 关联 ID 列表
+  @ApiPropertyOptional({ description: '角色ID列表', type: [Number] })
+  @IsOptional()
+  roleIds?: number[];
+}
+```
+
+### CreateXxxFormDto（表单 DTO，支持文件上传）
+```typescript
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { CreateXxxDto } from './create-xxx.dto';
+
+export class CreateXxxFormDto extends CreateXxxDto {
+  @ApiPropertyOptional({ type: 'string', format: 'binary', description: '文件' })
+  file?: Express.Multer.File;
+}
+```
+
+### UpdateXxxDto（更新 DTO）
+```typescript
+import { PartialType, OmitType } from '@nestjs/swagger';
+import { CreateXxxDto } from './create-xxx.dto';
+
+// PartialType：所有字段变可选
+// OmitType：移除不可更新的字段（如密码）
+export class UpdateXxxDto extends PartialType(CreateXxxDto) {}
+
+// 若有不可更新字段：
+// export class UpdateXxxDto extends PartialType(OmitType(CreateXxxDto, ['password'])) {}
+```
+
+### UpdateXxxFormDto（更新表单 DTO）
+```typescript
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { UpdateXxxDto } from './update-xxx.dto';
+
+export class UpdateXxxFormDto extends UpdateXxxDto {
+  @ApiPropertyOptional({ type: 'string', format: 'binary', description: '文件' })
+  file?: Express.Multer.File;
+}
+```
+
+### QueryXxxDto（查询 DTO）
+```typescript
+import { IsOptional, IsString } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { BasePaginationDto } from '../../../common/dto/base.dto';
+
+export class QueryXxxDto extends BasePaginationDto {
+  @ApiPropertyOptional({ description: '名称' })
+  @IsString()
+  @IsOptional()
+  name?: string;
+
+  @ApiPropertyOptional({ description: '状态' })
+  @IsString()
+  @IsOptional()
+  status?: string;
+}
+```
+
+### BatchDeleteDto（批量删除 DTO）
+```typescript
+import { IsArray, ArrayNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+
+export class BatchDeleteDto {
+  @ApiProperty({ description: 'ID数组', type: [Number] })
+  @IsArray()
+  @ArrayNotEmpty({ message: 'ID数组不能为空' })
+  ids: number[];
+}
+```
+
+### DTO 要点
+- 必填字段：`@ApiProperty` + `@IsNotEmpty`
+- 可选字段：`@ApiPropertyOptional` + `@IsOptional`
+- 后端内部字段：`@ApiHideProperty`
+- UpdateDto 使用 `PartialType(OmitType(...))` 模式
+- FormDto 继承对应的 Create/UpdateDto，额外添加文件字段
+
+---
+
+## 七、VO 视图对象规范
+
+```typescript
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { BaseVo } from '../../../common/vo/base.vo';
+
+// 子 VO（关联数据）
+export class RelatedVo {
+  @ApiProperty({ description: 'ID' })
+  id: number;
+
+  @ApiProperty({ description: '名称' })
+  name: string;
+}
+
+// 主 VO
+export class XxxVo extends BaseVo {
+  @ApiProperty({ description: '名称' })
+  name: string;
+
+  @ApiProperty({ description: '状态' })
+  status: string;
+
+  @ApiPropertyOptional({ description: '备注' })
+  remark?: string;
+
+  @ApiPropertyOptional({ description: '关联列表', type: [RelatedVo] })
+  related?: RelatedVo[];
+}
+
+// 列表 VO
+export class XxxListVo {
+  @ApiProperty({ description: '列表', type: [XxxVo] })
+  list: XxxVo[];
+
+  @ApiProperty({ description: '总数' })
+  total: number;
+}
+```
+
+### VO 要点
+- 继承 BaseVo（自动包含 id、createdAt、updatedAt）
+- 列表接口返回 `{ list: XxxVo[]; total: number }`
+- 不返回敏感字段（如密码）
+- 关联数据映射为子 VO
+
+---
+
+## 八、Repository 规范
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Xxx } from './entities/xxx.entity';
+import { QueryXxxDto } from './dto/query-xxx.dto';
+
+@Injectable()
+export class XxxRepository {
+  constructor(
+    @InjectRepository(Xxx)
+    private readonly xxxRepository: Repository<Xxx>,
+  ) {}
+
+  // 根据 ID 查询
+  async findById(id: number): Promise<Xxx | null> {
+    return this.xxxRepository.findOne({
+      where: { id, deleteStatus: '0' },
+      relations: ['xxx'],  // 需要关联数据时指定
+    });
+  }
+
+  // 分页列表查询
+  async findAll(query: QueryXxxDto): Promise<{ list: Xxx[]; total: number }> {
+    const { page = 1, pageSize = 10, name, status } = query;
+
+    const qb = this.xxxRepository.createQueryBuilder('xxx');
+    qb.where('xxx.deleteStatus = :deleteStatus', { deleteStatus: '0' });
+
+    // 条件过滤（有值才拼接）
+    if (name) {
+      qb.andWhere('xxx.name LIKE :name', { name: `%${name}%` });
+    }
+    if (status !== undefined) {
+      qb.andWhere('xxx.status = :status', { status });
+    }
+
+    qb.orderBy('xxx.createdAt', 'DESC');
+    qb.skip((page - 1) * pageSize);
+    qb.take(pageSize);
+
+    const [list, total] = await qb.getManyAndCount();
+    return { list, total };
+  }
+
+  // 创建
+  async create(data: Partial<Xxx>): Promise<Xxx> {
+    const entity = this.xxxRepository.create(data);
+    const [saved] = await this.xxxRepository.save(entity);
+    return this.findById(saved.id) as Promise<Xxx>;
+  }
+
+  // 更新
+  async update(id: number, data: Partial<Xxx>): Promise<Xxx | null> {
+    await this.xxxRepository.update(id, data);
+    return this.findById(id);
+  }
+
+  // 软删除（单个）
+  async remove(id: number): Promise<void> {
+    await this.xxxRepository.update(id, { deleteStatus: '1' });
+  }
+
+  // 批量软删除
+  async batchRemove(ids: number[]): Promise<void> {
+    await this.xxxRepository.update(ids, { deleteStatus: '1' });
+  }
+}
+```
+
+### Repository 要点
+- 所有查询必须过滤 `deleteStatus='0'`
+- findById 返回 `Promise<T | null>`
+- findAll 返回 `Promise<{ list: T[]; total: number }>`
+- create 返回 `Promise<T>`（重新查询以获取关联数据）
+- update 返回 `Promise<T | null>`
+- remove / batchRemove 返回 `Promise<void>`（软删除）
+- `save()` 使用解构赋值避免类型错误：`const [saved] = await repository.save(entity)`
+
+### 关联关系处理（如有）
+```typescript
+async create(data: Partial<Xxx>): Promise<Xxx> {
+  const { roles, ...otherData } = data as any;
+  const entity = this.xxxRepository.create(otherData);
+  const [saved] = await this.xxxRepository.save(entity);
+
+  if (roles?.length) {
+    saved.roles = roles;
+    await this.xxxRepository.save(saved);
+  }
+
+  return this.findById(saved.id) as Promise<Xxx>;
+}
+```
+
+---
+
+## 九、Service 规范
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { XxxRepository } from './xxx.repository';
+import { QueryXxxDto } from './dto/query-xxx.dto';
+import { CreateXxxDto } from './dto/create-xxx.dto';
+import { UpdateXxxDto } from './dto/update-xxx.dto';
+import { XxxVo, XxxListVo } from './vo/xxx.vo';
+import { BusinessException } from '../../common/exceptions/business.exception';
+import { ErrorCodeEnum } from '../../common/enums/error-code.enum';
+
+@Injectable()
+export class XxxService {
+  constructor(
+    private readonly xxxRepository: XxxRepository,
+    // 跨模块 Repository 在此注入
+  ) {}
+
+  async findById(id: number): Promise<XxxVo | null> {
+    const entity = await this.xxxRepository.findById(id);
+    return entity ? this.toXxxVo(entity) : null;
+  }
+
+  async findAll(query: QueryXxxDto): Promise<XxxListVo> {
+    const { list, total } = await this.xxxRepository.findAll(query);
+    return {
+      list: list.map((item) => this.toXxxVo(item)),
+      total,
+    };
+  }
+
+  async create(dto: CreateXxxDto, username?: string): Promise<XxxVo> {
+    const { roleIds, ...otherData } = dto as any;
+    const roles = roleIds?.length
+      ? await this.roleRepository.findByIds(roleIds)
+      : [];
+
+    const entity = await this.xxxRepository.create({
+      ...otherData,
+      roles,
+      createdBy: username,
+    });
+    return this.toXxxVo(entity);
+  }
+
+  async update(id: number, dto: UpdateXxxDto, username?: string): Promise<XxxVo | null> {
+    const { roleIds, ...otherData } = dto as any;
+    const updateData: any = { ...otherData, updatedBy: username };
+
+    if (roleIds !== undefined) {
+      updateData.roles = roleIds?.length
+        ? await this.roleRepository.findByIds(roleIds)
+        : [];
+    }
+
+    const entity = await this.xxxRepository.update(id, updateData);
+    return entity ? this.toXxxVo(entity) : null;
+  }
+
+  async remove(id: number): Promise<void> {
+    return this.xxxRepository.remove(id);
+  }
+
+  async batchRemove(ids: number[]): Promise<void> {
+    return this.xxxRepository.batchRemove(ids);
+  }
+
+  // 私有方法：实体 → VO 转换
+  private toXxxVo(entity: any): XxxVo {
+    return {
+      id: entity.id,
+      name: entity.name,
+      status: entity.status,
+      remark: entity.remark,
+      // 关联数据映射
+      roles: entity.roles?.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+      })),
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+    };
+  }
+}
+```
+
+### Service 要点
+- 注入对应的 Repository，可跨模块注入
+- 方法入参接收 DTO，出参返回 VO
+- create / update 接收 `username` 参数记录 createdBy / updatedBy
+- 关联字段（如 roleIds）在 Service 层拆解：提取 ID → 查询关联实体 → 传给 Repository
+- 通过 `private toXxxVo()` 做实体到 VO 的转换
+- 手动抛错使用 `BusinessException + ErrorCodeEnum`
+- 创建/更新接口不返回数据，前端根据 code 判断成功
+
+---
+
+## 十、Controller 规范
+
+```typescript
+import {
+  Controller, Get, Post, Put, Delete,
+  Body, Param, Query, Req,
+  UseGuards, UseInterceptors, UploadedFile,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { XxxService } from './xxx.service';
+import { CreateXxxDto } from './dto/create-xxx.dto';
+import { CreateXxxFormDto } from './dto/create-xxx-form.dto';
+import { UpdateXxxDto } from './dto/update-xxx.dto';
+import { UpdateXxxFormDto } from './dto/update-xxx-form.dto';
+import { QueryXxxDto } from './dto/query-xxx.dto';
+import { BatchDeleteDto } from './dto/batch-delete.dto';
+import { XxxVo, XxxListVo } from './vo/xxx.vo';
+import {
+  ApiTags, ApiOperation, ApiBearerAuth,
+  ApiResponse, ApiConsumes, ApiBody,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { Permission } from '../../common/decorators/permission.decorator';
+import { Log } from '../../common/decorators/log.decorator';
+import { FileService } from '../../common/services/file.service';
+import { UploadPathEnum } from '../../common/enums/upload-path.enum';
+
+@ApiTags('XXX管理')
+@Controller('xxx')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
+export class XxxController {
+  constructor(
+    private readonly xxxService: XxxService,
+    private readonly fileService: FileService,  // 有文件上传时注入
+  ) {}
+
+  // ========== 列表查询 ==========
+  @Get()
+  @ApiOperation({ summary: '获取XXX列表' })
+  @ApiResponse({ status: 200, description: '成功', type: XxxListVo })
+  @Permission('system:xxx:list')
+  @Log('获取XXX列表')
+  async findAll(@Query() query: QueryXxxDto): Promise<XxxListVo> {
+    return this.xxxService.findAll(query);
+  }
+
+  // ========== 详情查询 ==========
+  @Get(':id')
+  @ApiOperation({ summary: '获取XXX详情' })
+  @ApiResponse({ status: 200, description: '成功', type: XxxVo })
+  @Permission('system:xxx:query')
+  @Log('获取XXX详情')
+  async findOne(@Param('id') id: number): Promise<XxxVo | null> {
+    return this.xxxService.findById(id);
+  }
+
+  // ========== 创建（含文件上传）==========
+  @Post()
+  @ApiOperation({ summary: '创建XXX' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreateXxxFormDto })
+  @ApiResponse({ status: 200, description: '成功' })
+  @UseInterceptors(FileInterceptor('file'))
+  @Permission('system:xxx:add')
+  @Log('创建XXX')
+  async create(
+    @Body() dto: CreateXxxDto,
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: any,
+  ): Promise<void> {
+    if (file) {
+      const result = this.fileService.saveFile(file, UploadPathEnum.IMAGE);
+      (dto as any).fileUrl = result.accessUrl;
+    }
+    await this.xxxService.create(dto, req.userInfo?.username);
+  }
+
+  // ========== 更新（含文件上传）==========
+  @Put(':id')
+  @ApiOperation({ summary: '更新XXX' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: UpdateXxxFormDto })
+  @ApiResponse({ status: 200, description: '成功' })
+  @UseInterceptors(FileInterceptor('file'))
+  @Permission('system:xxx:edit')
+  @Log('更新XXX')
+  async update(
+    @Param('id') id: number,
+    @Body() dto: UpdateXxxDto,
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: any,
+  ): Promise<void> {
+    if (file) {
+      const result = this.fileService.saveFile(file, UploadPathEnum.IMAGE);
+      (dto as any).fileUrl = result.accessUrl;
+    }
+    await this.xxxService.update(id, dto, req.userInfo?.username);
+  }
+
+  // ========== 删除 ==========
+  @Delete(':id')
+  @ApiOperation({ summary: '删除XXX' })
+  @Permission('system:xxx:delete')
+  @Log('删除XXX')
+  async remove(@Param('id') id: number): Promise<void> {
+    return this.xxxService.remove(id);
+  }
+
+  // ========== 批量删除 ==========
+  @Delete('batch')
+  @ApiOperation({ summary: '批量删除XXX' })
+  @ApiBody({ type: BatchDeleteDto })
+  @Permission('system:xxx:delete')
+  @Log('批量删除XXX')
+  async batchRemove(@Body() dto: BatchDeleteDto): Promise<void> {
+    await this.xxxService.batchRemove(dto.ids);
+  }
+}
+```
+
+### Controller 要点
+- 类级装饰器顺序：`@ApiTags` → `@Controller` → `@UseGuards(JwtAuthGuard)` → `@ApiBearerAuth()`
+- 每个接口必须有：`@ApiOperation`、`@Permission`、`@Log`
+- 列表接口指定 `@ApiResponse` type 为 XxxListVo
+- 详情接口指定 `@ApiResponse` type 为 XxxVo
+- 创建/更新接口返回 `Promise<void>`（前端根据 code 判断成功）
+- 文件上传接口需要 `@ApiConsumes('multipart/form-data')` + `@UseInterceptors(FileInterceptor('file'))`
+- 操作者信息通过 `@Req() req` 从 `req.userInfo?.username` 获取
+
+### 权限标识规则
+
+
+### 不含文件上传的简化 Controller
+```typescript
+@ApiTags('XXX管理')
+@Controller('xxx')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
+export class XxxController {
+  constructor(private readonly xxxService: XxxService) {}
+
+  @Get()
+  @ApiOperation({ summary: '获取XXX列表' })
+  @ApiResponse({ status: 200, description: '成功', type: XxxListVo })
+  @Permission('system:xxx:list')
+  @Log('获取XXX列表')
+  async findAll(@Query() query: QueryXxxDto): Promise<XxxListVo> {
+    return this.xxxService.findAll(query);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: '获取XXX详情' })
+  @ApiResponse({ status: 200, description: '成功', type: XxxVo })
+  @Permission('system:xxx:query')
+  @Log('获取XXX详情')
+  async findOne(@Param('id') id: number): Promise<XxxVo | null> {
+    return this.xxxService.findById(id);
+  }
+
+  @Post()
+  @ApiOperation({ summary: '创建XXX' })
+  @ApiResponse({ status: 200, description: '成功' })
+  @Permission('system:xxx:add')
+  @Log('创建XXX')
+  async create(@Body() dto: CreateXxxDto, @Req() req: any): Promise<void> {
+    await this.xxxService.create(dto, req.userInfo?.username);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: '更新XXX' })
+  @ApiResponse({ status: 200, description: '成功' })
+  @Permission('system:xxx:edit')
+  @Log('更新XXX')
+  async update(
+    @Param('id') id: number,
+    @Body() dto: UpdateXxxDto,
+    @Req() req: any,
+  ): Promise<void> {
+    await this.xxxService.update(id, dto, req.userInfo?.username);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: '删除XXX' })
+  @Permission('system:xxx:delete')
+  @Log('删除XXX')
+  async remove(@Param('id') id: number): Promise<void> {
+    return this.xxxService.remove(id);
+  }
+
+  @Delete('batch')
+  @ApiOperation({ summary: '批量删除XXX' })
+  @ApiBody({ type: BatchDeleteDto })
+  @Permission('system:xxx:delete')
+  @Log('批量删除XXX')
+  async batchRemove(@Body() dto: BatchDeleteDto): Promise<void> {
+    await this.xxxService.batchRemove(dto.ids);
+  }
+}
+```
+
+---
+
+## 十一、Module 规范
+
+```typescript
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { XxxService } from './xxx.service';
+import { XxxController } from './xxx.controller';
+import { XxxRepository } from './xxx.repository';
+import { Xxx } from './entities/xxx.entity';
+
+@Module({
+  imports: [TypeOrmModule.forFeature([Xxx])],
+  controllers: [XxxController],
+  providers: [XxxService, XxxRepository],
+  exports: [XxxService],
+})
+export class XxxModule {}
+```
+
+### 跨模块依赖示例
+```typescript
+import { Role } from '../role/entities/role.entity';
+import { RoleRepository } from '../role/role.repository';
+
+@Module({
+  imports: [TypeOrmModule.forFeature([Xxx, Role])],
+  controllers: [XxxController],
+  providers: [XxxService, XxxRepository, RoleRepository],
+  exports: [XxxService],
+})
+export class XxxModule {}
+```
+
+### 注册到 app.module.ts
+```typescript
+import { XxxModule } from './modules/xxx/xxx.module';
+
+@Module({
+  imports: [
+    // ...已有模块
+    XxxModule,
+  ],
+})
+export class AppModule {}
+```
+
+---
+
+## 十二、文件上传规范
+
+### 需要文件上传时
+1. DTO 中定义文件字段：`file?: Express.Multer.File`
+2. 创建 CreateXxxFormDto / UpdateXxxFormDto（继承对应 DTO，添加文件字段）
+3. Controller 中使用 `@UseInterceptors(FileInterceptor('file'))`
+4. 使用 `@UploadedFile()` 接收文件
+5. 使用 `FileService.saveFile(file, UploadPathEnum.XXX)` 保存
+6. 将返回的 accessUrl 设置到 DTO 对应字段
+
+### 不需要文件上传时
+- 不注入 FileService
+- 不使用 @UseInterceptors、@UploadedFile
+- 不创建 FormDto
+- 直接使用 CreateXxxDto / UpdateXxxDto
+
+### UploadPathEnum
+```typescript
+export enum UploadPathEnum {
+  AVATAR = 'avatar',
+  IMAGE = 'image',
+  DOCUMENT = 'document',
+}
+```
+
+---
+
+## 十三、新建模块完整步骤
+
+1. **Entity**：继承 BaseEntity，定义表名和字段
+2. **DTO**：create → update → query → batch-delete → form（可选）
+3. **VO**：继承 BaseVo + XxxListVo
+4. **Repository**：注入 Repository，实现 CRUD
+5. **Service**：注入 Repository，实现业务逻辑 + toXxxVo 转换
+6. **Controller**：实现接口，添加装饰器
+7. **Module**：注册依赖
+8. **app.module.ts**：导入新模块
+9. **错误码**：如有新错误码，在 ErrorCodeEnum + ErrorMessageMap 中添加
+10. **构建校验**：执行 pnpm build
+
+---
+
+## 十四、编码要点
+
+1. 创建和更新接口返回 void，前端根据 code 是否为 200 判断成功
+2. 手动抛错使用 BusinessException + ErrorCodeEnum，若无合适错误码需新增
+3. 不添加多余注释，除非用户要求
+4. 所有查询过滤 deleteStatus='0'（软删除）
+5. save() 使用解构赋值：`const [saved] = await repository.save(entity)`
+6. Controller 参数类型用 DTO，返回类型用 VO
+7. 遵循 ESLint + Prettier 代码风格
+8. 构建完成后执行 pnpm build 校验

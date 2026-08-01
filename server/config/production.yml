@@ -1,0 +1,89 @@
+# 生产环境配置
+
+# 应用配置
+app:
+  # 超级管理员用户名，跳过权限校验
+  admin: admin
+  # 全局接口前缀（生产环境）
+  apiPrefix: prod-api
+
+# 服务器配置
+server:
+  port: 3000
+
+# Swagger 文档配置
+swagger:
+  # Swagger Servers 中展示的基础地址（需包含环境前缀）
+  # 部署时请替换为实际域名
+  serverUrl: http://localhost:3000/prod-api
+
+# 上传文件配置
+upload:
+  # 上传文件保存路径
+  dest: ./uploads
+  # 单文件最大大小 (MB)
+  maxSize: 10
+
+# 数据库配置
+database:
+  type: mysql
+  host: localhost
+  port: 3306
+  username: root
+  password: '123456'
+  database: sys_nest_server
+  synchronize: false
+  logging: false
+
+# Redis配置
+redis:
+  host: localhost
+  port: 6379
+  password: ''
+  db: 2
+
+# JWT配置
+jwt:
+  secret: sys-nest-jwt-secret-prod-change-this
+  # 长token (用于刷新)
+  refreshSecret: sys-nest-jwt-refresh-secret-prod-change-this
+  # 短token过期时间 (用于访问)
+  accessTokenExpiresIn: 2h
+  # 长token过期时间 (用于刷新)
+  refreshTokenExpiresIn: 7d
+
+# 验证码配置
+captcha:
+  # 验证码过期时间 (秒)
+  expiresIn: 300
+
+# 请求白名单配置
+whitelist:
+  # 不需要认证的接口
+  paths:
+    - /prod-api/auth/login
+    - /prod-api/auth/refresh
+    - /prod-api/captcha
+  # 不需要认证的前缀
+  prefixes:
+    - /api
+    - /swagger
+
+# Redis键配置
+redisKeys:
+  # 用户信息缓存
+  user:
+    prefix: 'user:info:'
+    expiresIn: 86400
+  # 验证码
+  captcha:
+    prefix: 'captcha:'
+    expiresIn: 300
+  # Token黑名单
+  tokenBlacklist:
+    prefix: 'token:blacklist:'
+    expiresIn: 604800
+  # 字典数据缓存（按字典类型 type 缓存）
+  dict:
+    prefix: 'dict:data:'
+    expiresIn: 0 # 0 表示永久缓存，由 CRUD 主动失效

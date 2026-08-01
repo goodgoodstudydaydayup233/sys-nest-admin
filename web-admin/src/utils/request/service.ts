@@ -42,7 +42,7 @@ import { filterEmptyFields } from '@/utils/filter'
 
 /** 后端标准响应数据结构 */
 export interface ApiResponse<T = unknown> {
-  /** 业务错误码：0 表示成功，其他值表示错误（参考 ErrorCodeEnum）*/
+  /** 业务错误码：0 表示成功，其他值表示错误（对应 ErrorCodeEnum）*/
   code: number
   /** 提示消息（支持字符串或字符串数组） */
   msg: string | string[] | null

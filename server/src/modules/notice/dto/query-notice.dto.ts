@@ -4,7 +4,7 @@ import { BasePaginationDto } from '../../../common/dto/base.dto';
 
 /**
  * 查询通知公告 DTO
- * @description 对标若依 SysNoticeBo 查询条件
+ * @description 通知查询条件
  *
  * @使用示例
  * GET /system/notice?page=1&pageSize=10&noticeTitle=维护&noticeType=1

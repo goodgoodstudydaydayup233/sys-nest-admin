@@ -6,7 +6,7 @@ import { QueryLoginLogDto } from './dto/query-login-log.dto';
 
 /**
  * 登录日志仓储层
- * @description 对标若依 SysLogininforMapper，负责数据库操作
+ * @description 负责数据库操作
  */
 @Injectable()
 export class LoginLogRepository {

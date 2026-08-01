@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 /**
  * 在线用户视图对象
- * @description 对标若依 UserOnlineVO，展示当前登录中的用户信息
+ * @description 展示当前登录中的用户信息
  *
  * @字段说明
  * - tokenId: access token（作为唯一标识，用于强退）

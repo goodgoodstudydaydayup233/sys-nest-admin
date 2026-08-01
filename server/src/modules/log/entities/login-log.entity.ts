@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeor
 
 /**
  * 登录日志实体
- * @description 对标若依 sys_logininfor，记录用户登录行为（成功/失败）
+ * @description 记录用户登录行为（成功/失败）
  *
  * @字段说明
  * - userName: 登录账号（失败时也记录用户输入的账号）

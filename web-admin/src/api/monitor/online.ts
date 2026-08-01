@@ -1,6 +1,6 @@
 /**
  * 在线用户 API
- * @description 对标若依 monitor/online 接口
+ * @description 对应 monitor/online 接口
  *
  * @接口说明
  * - GET    /monitor/online/list          查询在线用户列表（支持用户名/IP 筛选）

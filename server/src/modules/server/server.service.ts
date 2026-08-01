@@ -9,16 +9,16 @@ const BYTES_PER_GB = 1024 * 1024 * 1024;
 
 /**
  * 服务监控服务
- * @description 对标若依 ServerController#.getInfo，基于 systeminformation 采集：
+ * @description 基于 systeminformation 采集：
  *
  * - CPU：型号 / 核心数 / 系统与用户使用率 / 主频
  * - 内存：总量 / 已用 / 空闲 / 使用率
  * - 系统：主机名 / IP / 操作系统 / 架构 / 运行时长
- * - Node.js 运行时：版本 / 进程运行时长 / 内存占用（兼容若依 JVM 字段）
+ * - Node.js 运行时：版本 / 进程运行时长 / 内存占用（兼容 JVM 字段）
  * - 磁盘：各盘符 / 挂载点的容量与使用率
  *
  * @说明
- * 若依原版基于 Java/OSHI，这里适配为 Node.js 运行时；
+ * 基于 Node.js 运行时采集；
  * `jvm` 字段复用 NodeRuntimeVo 以兼容前端字段命名。
  */
 @Injectable()
@@ -142,7 +142,7 @@ export class ServerService {
   }
 
   /**
-   * Node.js 运行时信息（兼容若依 JVM 字段）
+   * Node.js 运行时信息（兼容 JVM 字段）
    */
   private getNodeRuntimeInfo(): NodeRuntimeVo {
     const mem = process.memoryUsage();

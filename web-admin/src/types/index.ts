@@ -107,7 +107,6 @@ export interface LoginResult {
 /**
  * 路由元信息
  * @description 统一定义路由 meta 字段，供路由守卫、侧边栏、面包屑、标签页等模块使用
- * 参考若依/芋道开源项目规范
  *
  * @property title       页面标题（侧边栏/面包屑/浏览器标签页共用）
  * @property icon        菜单图标名称（对应 iconMap 中的 key）
@@ -138,7 +137,7 @@ export interface RouteMeta {
 /**
  * 路由自定义顶级属性
  * @description hidden、alwaysShow、roles、permissions、query 等应与 path 同级，
- * 遵循若依/芋道开源项目规范
+ * 遵循通用后台规范
  *
  * @property hidden       当设置 true 的时候该路由不会再侧边栏出现
  * @property alwaysShow   强制始终显示根路由目录（即使只有一个子路由）

@@ -8,7 +8,7 @@ import { LOG_METADATA_KEY, LogMetadata } from '../decorators/log.decorator';
 
 /**
  * 操作日志全局拦截器
- * @description 对标若依 LogAspect AOP 切面。只有标注了 @Log 装饰器的 Controller 方法才会记录操作日志。
+ * @description 只有标注了 @Log 装饰器的 Controller 方法才会记录操作日志。
  *
  * 记录内容：
  * - title / businessType：来自 @Log 装饰器元数据

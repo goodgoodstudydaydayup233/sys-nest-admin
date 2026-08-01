@@ -1,6 +1,6 @@
 /**
  * 缓存监控 API
- * @description 对标若依缓存监控与缓存列表接口
+ * @description 缓存监控与缓存列表接口
  *
  * @接口分组
  * 1. 缓存监控（cache/index.vue）

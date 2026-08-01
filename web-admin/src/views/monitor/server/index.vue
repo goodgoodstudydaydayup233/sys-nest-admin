@@ -193,7 +193,7 @@
 <script setup lang="ts">
 /**
  * 服务监控页面
- * @description 对标若依 monitor/server，展示服务器 CPU/内存/系统/Node.js 运行时/磁盘状态
+ * @description 展示服务器 CPU/内存/系统/Node.js 运行时/磁盘状态
  *
  * @数据来源
  * - GET /monitor/server 获取聚合监控信息

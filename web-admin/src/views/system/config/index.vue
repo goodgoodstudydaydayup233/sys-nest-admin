@@ -150,7 +150,7 @@
 <script setup lang="ts">
 /**
  * 参数设置页面
- * @description 对标若依 monitor/config（sys_config），提供系统参数的增删改查与缓存刷新
+ * @description 提供系统参数的增删改查与缓存刷新
  *
  * @UI 布局
  * - 筛选区：参数名称、参数分组

@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
 
 /**
- * 定时任务调度日志实体（对标若依 sys_job_log）
+ * 定时任务调度日志实体（对应 sys_job_log）
  * @description 日志直接物理管理（删除/清空），无需软删除字段
  */
 @Entity('sys_job_log')

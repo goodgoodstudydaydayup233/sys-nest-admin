@@ -12,7 +12,7 @@ import { UserInfoDto } from '../../common/dto/user-info.dto';
  * @description 登录/刷新/登出/获取路由等接口。
  *
  * @说明 不记录操作日志：
- * - 登录/登出/刷新 属于"登录日志"范畴（对标若依 sys_logininfor），不在操作日志中记录
+ * - 登录/登出/刷新 属于"登录日志"范畴，不在操作日志中记录
  * - 获取用户信息/路由 属于纯查询，无业务价值，不记录
  */
 @ApiTags('认证')

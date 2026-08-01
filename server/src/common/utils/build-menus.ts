@@ -12,7 +12,7 @@ const INNER_LINK = 'InnerLink';
 
 /**
  * 菜单节点（build-menus 输入）
- * @description 对标 sys_menu 表结构，仅声明 build-menus 依赖的字段
+ * @description 对应 sys_menu 表结构，仅声明 build-menus 依赖的字段
  */
 export interface MenuNode {
   id: number;
@@ -104,8 +104,8 @@ const isMenuFrame = (menu: MenuNode): boolean => {
 
 /**
  * 判断是否为内嵌外链
- * @description 对标若依：isFrame='0'（是外链）且 path 为 URL 时，以 InnerLink 组件 iframe 内嵌展示。
- * 注意：YES_FRAME='0' 表示"是外链"，命名易混淆，但与若依常量定义一致。
+ * @description isFrame='0'（是外链）且 path 为 URL 时，以 InnerLink 组件 iframe 内嵌展示。
+ * 注意：YES_FRAME='0' 表示"是外链"，命名易混淆，但与常量定义一致。
  */
 const isInnerLink = (menu: MenuNode): boolean => {
   return menu.isFrame === YES_FRAME && isExternalUrl(menu.path);
@@ -185,7 +185,7 @@ const formatTreeNodeBuildMenus = (menus: MenuNode[]): RouteRecord[] => {
       childrenList.push(childrenRouter);
       router.children = childrenList;
     } else if (menu.parentId === 0 && isInnerLink(menu)) {
-      // 顶级外链：用 Layout 包裹，子路由以 InnerLink 组件 iframe 内嵌展示（对标若依）
+      // 顶级外链：用 Layout 包裹，子路由以 InnerLink 组件 iframe 内嵌展示
       router.meta = {
         title: menu.menuName,
         icon: menu.icon,

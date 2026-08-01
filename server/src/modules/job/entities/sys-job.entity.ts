@@ -2,7 +2,7 @@ import { Entity, Column } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 
 /**
- * 定时任务实体（对标若依 sys_job）
+ * 定时任务实体（对应 sys_job）
  */
 @Entity('sys_job')
 export class SysJob extends BaseEntity {

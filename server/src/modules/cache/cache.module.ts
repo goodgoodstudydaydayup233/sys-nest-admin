@@ -4,7 +4,7 @@ import { CacheService } from './cache.service';
 
 /**
  * 缓存监控模块
- * @description 对标若依缓存监控能力，提供 Redis 信息查询与 key 管理
+ * @description 提供 Redis 信息查询与 key 管理
  * @依赖 RedisService 由 core/redis 模块全局提供
  */
 @Module({

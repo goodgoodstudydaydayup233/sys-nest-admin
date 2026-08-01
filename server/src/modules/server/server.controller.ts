@@ -7,7 +7,7 @@ import { Permission } from '../../common/decorators/permission.decorator';
 
 /**
  * 服务监控控制器
- * @description 对标若依 ServerController，提供服务器 CPU/内存/磁盘/系统/Node.js 运行时监控
+ * @description 提供服务器 CPU/内存/磁盘/系统/Node.js 运行时监控
  *
  * @路由前缀 /{dev-api|prod-api}/monitor/server
  *

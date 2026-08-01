@@ -82,7 +82,7 @@
 <script setup lang="ts">
 /**
  * 在线用户页面
- * @description 对标若依 monitor/online，展示当前登录中的用户并支持强退
+ * @description 展示当前登录中的用户并支持强退
  *
  * @功能
  * 1. 查询在线用户列表（支持用户名、IP 筛选）

@@ -13,7 +13,7 @@ import { ErrorCodeEnum } from '../../common/enums/error-code.enum';
 
 /**
  * 定时任务服务
- * @description 对标若依 SysJobServiceImpl，提供任务 CRUD、动态调度同步、立即执行、
+ * @description 提供任务 CRUD、动态调度同步、立即执行、
  * 状态切换、调用目标解析执行、并发控制与调度日志记录。
  *
  * @调度策略

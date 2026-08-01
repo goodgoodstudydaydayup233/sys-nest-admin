@@ -18,7 +18,7 @@ import { BatchDeleteDto } from '../role/dto/batch-delete.dto';
 
 /**
  * 登录日志控制器
- * @description 对标若依 SysLogininforController，提供登录日志的查询、详情、批量删除、清空
+ * @description 提供登录日志的查询、详情、批量删除、清空
  *
  * @路由前缀 /{dev-api|prod-api}/logininfor
  * @接口列表

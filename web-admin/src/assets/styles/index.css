@@ -1,6 +1,6 @@
 /**
  * 全局基础样式覆盖
- * @description 参考若依/nest-admin 前端风格：
+ * @description 前端风格：
  *   1. el-table 仅保留行间分隔线（横线），移除竖向列分隔线
  *   2. 搜索区不再使用 el-card 包裹，改用 .search-bar 扁平样式
  *
@@ -12,7 +12,7 @@
 /**
  * 移除表格竖向分隔线（列边框）
  * - 即使 el-table 开启了 border 属性，也强制隐藏竖线
- * - 保留行间分隔线（border-bottom）实现"仅行间存在间隔线"的若依风格
+ * - 保留行间分隔线（border-bottom）实现"仅行间存在间隔线"的风格
  */
 .el-table__cell {
   border-right: none !important;
@@ -37,7 +37,7 @@
 }
 
 /**
- * 表头淡灰色背景（若依/nest-admin 风格）
+ * 表头淡灰色背景（nest-admin 风格）
  * - 表头背景色 #f8f8f8，字色 #666，字重 600
  * - 同时兼容浅色模式与默认模式
  */
@@ -56,7 +56,7 @@ html.dark .el-table .el-table__header-wrapper th.el-table__cell {
 }
 
 /**
- * 分页容器统一样式（若依/nest-admin 风格）
+ * 分页容器统一样式（nest-admin 风格）
  * - 右对齐
  * - 上下留白 16px
  * - 无背景、无边框

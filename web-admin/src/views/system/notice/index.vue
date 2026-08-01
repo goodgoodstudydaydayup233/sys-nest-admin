@@ -200,7 +200,7 @@
 <script setup lang="ts">
 /**
  * 通知公告页面
- * @description 对标若依 system/notice（sys_notice），提供通知公告的增删改查
+ * @description 提供通知公告的增删改查
  *
  * @UI 布局
  * - 筛选区：通知标题、创建者、通知类型

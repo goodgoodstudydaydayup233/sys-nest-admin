@@ -9,7 +9,7 @@ import { BusinessType } from '../../common/enums/business-type.enum';
 
 /**
  * 缓存监控控制器
- * @description 对标若依 RedisController，提供缓存监控与缓存列表能力
+ * @description 提供缓存监控与缓存列表能力
  *
  * @路由前缀 /{dev-api|prod-api}/cache
  *

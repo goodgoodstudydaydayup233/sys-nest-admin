@@ -1,6 +1,6 @@
 /**
  * 操作日志业务类型枚举
- * @description 对标若依 BusinessType，用于标识操作的业务类别
+ * @description 用于标识操作的业务类别
  *
  * @枚举值
  * - OTHER('0'): 其它

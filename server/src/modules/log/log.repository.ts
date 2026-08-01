@@ -6,7 +6,7 @@ import { QueryLogDto } from './dto/query-log.dto';
 
 /**
  * 操作日志仓储层
- * @description 对标若依 SysOperLogMapper，负责数据库操作
+ * @description 负责数据库操作
  */
 @Injectable()
 export class LogRepository {

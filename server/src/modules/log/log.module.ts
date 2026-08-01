@@ -13,7 +13,7 @@ import { LoggingInterceptor } from '../../common/interceptors/logging.intercepto
 
 /**
  * 日志模块
- * @description 对标若依日志能力，包含：
+ * @description 提供日志能力，包含：
  * 1. 操作日志（sys_oper_log）：通过全局 LoggingInterceptor 拦截 @Log 装饰器标注的接口自动记录
  * 2. 登录日志（sys_logininfor）：由 AuthService 在登录成功/失败时主动调用记录
  */

@@ -3,7 +3,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 /**
  * 创建通知公告 DTO
- * @description 对标若依 SysNoticeBo
+ * @description SysNoticeBo
  *
  * @使用示例
  * POST /system/notice

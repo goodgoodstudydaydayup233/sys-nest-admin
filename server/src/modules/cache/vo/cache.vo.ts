@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 /**
  * Redis 监控信息视图对象
- * @description 对标若依 CacheVo，包含 Redis 信息、dbSize、命令统计
+ * @description 包含 Redis 信息、dbSize、命令统计
  */
 export class CacheMonitorVo {
   @ApiProperty({ description: 'Redis INFO 分组信息' })
@@ -45,7 +45,7 @@ export class CacheValueVo {
 
 /**
  * 缓存名称视图对象
- * @description 对标若依缓存列表左栏，按业务前缀分组的缓存名称
+ * @description 缓存列表左栏，按业务前缀分组的缓存名称
  */
 export class CacheNameVo {
   @ApiProperty({ description: '缓存名称（业务标识）' })
@@ -57,7 +57,7 @@ export class CacheNameVo {
 
 /**
  * 缓存内容详情
- * @description 对标若依缓存列表右栏，展示缓存名称、键名、值
+ * @description 缓存列表右栏，展示缓存名称、键名、值
  */
 export class CacheContentVo {
   @ApiProperty({ description: '缓存名称' })

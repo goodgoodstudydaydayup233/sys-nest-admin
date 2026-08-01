@@ -2,10 +2,10 @@ import { AppConfigService } from '../../core/config/config.service';
 
 /**
  * 缓存名称定义
- * @description 对标若依 CacheConstants，将业务缓存按前缀分组，供缓存列表页三栏展示
+ * @description 将业务缓存按前缀分组，供缓存列表页三栏展示
  *
  * @设计说明
- * 若依的"缓存列表"按业务模块（缓存名称）组织，而非按 Redis db 切换。
+ * "缓存列表"按业务模块（缓存名称）组织，而非按 Redis db 切换。
  * 每个缓存名称对应一个 Redis key 前缀，例如 sys_config 对应 config:* 下所有 key。
  * 这样业务上更直观：左侧选"参数配置"，中间列出所有配置缓存，右侧看内容。
  */

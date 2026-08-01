@@ -103,9 +103,9 @@
 <script setup lang="ts">
 /**
  * 缓存监控页面
- * @description 对标若依 monitor/cache，展示 Redis 基本信息、命令统计玫瑰图、内存仪表盘
+ * @description 展示 Redis 基本信息、命令统计玫瑰图、内存仪表盘
  *
- * @UI 对标（nest-admin/admin-vue3/src/views/monitor/cache/index.vue）
+ * @UI 布局
  * - 基本信息：原生 table + el-table 样式（4列×3行）
  * - 命令统计：echarts 玫瑰图（roseType: radius）
  * - 内存信息：echarts 仪表盘（gauge）展示 used_memory_human
@@ -132,7 +132,7 @@ let memoryChart: echarts.ECharts | null = null
 
 // ==================== 计算属性 ====================
 
-/** Redis INFO 直接平铺取值（若依取 Server 与 Memory 混合字段，这里统一从平铺结构取） */
+/** Redis INFO 直接平铺取值（统一从平铺结构取 Server 与 Memory 字段） */
 const info = computed<Record<string, string>>(() => {
   // 后端 info 是分组结构，合并所有分组方便取值
   const grouped = monitorData.value?.info || {}
@@ -192,7 +192,7 @@ function renderMemoryChart() {
   }
 
   const usedHuman = info.value.used_memory_human || '0'
-  // 提取数值部分用于仪表盘（若依原样取 parseFloat）
+  // 提取数值部分用于仪表盘（使用 parseFloat）
   const usedValue = parseFloat(usedHuman) || 0
 
   memoryChart.setOption({
@@ -289,7 +289,7 @@ onBeforeUnmount(() => {
   font-weight: 600;
 }
 
-/* el-table 样式表（对标若依原生 table 布局） */
+/* el-table 样式表（原生 table 布局） */
 .el-table {
   border: 1px solid #ebeef5;
   border-bottom: none;

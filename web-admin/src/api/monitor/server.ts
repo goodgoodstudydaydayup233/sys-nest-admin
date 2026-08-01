@@ -1,6 +1,6 @@
 /**
  * 服务监控 API
- * @description 对标若依 monitor/server 接口，获取服务器 CPU/内存/磁盘/系统/Node.js 运行时信息
+ * @description 获取服务器 CPU/内存/磁盘/系统/Node.js 运行时信息
  *
  * @接口清单
  * - GET /monitor/server   获取服务监控信息
@@ -65,7 +65,7 @@ export interface SysVo {
   uptime: number
 }
 
-/** Node.js 运行时信息（兼容若依 JVM 字段） */
+/** Node.js 运行时信息（兼容 JVM 字段） */
 export interface NodeRuntimeVo {
   /** Node.js 版本 */
   nodeVersion: string
@@ -113,7 +113,7 @@ export interface ServerVo {
   sys: SysVo
   /** Node.js 运行时信息 */
   node: NodeRuntimeVo
-  /** 进程信息（兼容若依 JVM 字段，同 node） */
+  /** 进程信息（兼容 JVM 字段，同 node） */
   jvm: NodeRuntimeVo
   /** 磁盘信息列表 */
   sysFiles: DiskVo[]

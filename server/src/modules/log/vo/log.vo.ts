@@ -3,7 +3,7 @@ import { BaseVo, BaseListVo } from '../../../common/vo/base.vo';
 
 /**
  * 操作日志视图对象
- * @description 对标若依 SysOperLogVo
+ * @description SysOperLogVo
  */
 export class LogVo extends BaseVo {
   @ApiProperty({ description: '模块标题' })

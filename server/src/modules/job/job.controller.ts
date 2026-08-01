@@ -14,7 +14,7 @@ import { BatchDeleteDto } from '../role/dto/batch-delete.dto';
 
 /**
  * 定时任务管理控制器
- * @description 对标若依 SysJobController，提供任务的增删改查、状态切换、立即执行
+ * @description 提供任务的增删改查、状态切换、立即执行
  *
  * @路由前缀 /{dev-api|prod-api}/job
  * @接口列表

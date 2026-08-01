@@ -34,7 +34,7 @@
  * 渲染逻辑：
  * - 无子路由 → 渲染为 el-menu-item（叶子节点），点击由 vue-router 跳转
  * - 有子路由 → 渲染为 el-sub-menu（目录节点），内部递归调用自身
- * - 外链（meta.link / meta.path 为 URL）→ 路由映射到 InnerLink 组件，在内容区以 iframe 内嵌展示（对标若依）
+ * - 外链（meta.link / meta.path 为 URL）→ 路由映射到 InnerLink 组件，在内容区以 iframe 内嵌展示。
  * - hidden: true 的菜单项不渲染（由父级 v-if 控制）
  * - 图标通过 resolveIcon 函数从 iconMap 中解析对应的 Element Plus 图标组件
  *

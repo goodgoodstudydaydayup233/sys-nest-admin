@@ -11,7 +11,7 @@ import { RedisService } from '../../core/redis/redis.service';
 
 /**
  * 参数配置服务
- * @description 对标若依 sys_config，采用缓存优先策略：
+ * @description 采用缓存优先策略：
  * - 读取（getValueByKey）：先查 Redis 缓存，未命中查数据库并回写缓存
  * - 写入（create/update/remove）：同步失效对应 key 的缓存
  * - 刷新（refreshCache）：清空所有配置缓存，重新预热

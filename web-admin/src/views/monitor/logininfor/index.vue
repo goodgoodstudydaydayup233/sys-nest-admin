@@ -170,7 +170,7 @@
 <script setup lang="ts">
 /**
  * 登录日志页面
- * @description 对标若依 logininfor，提供登录日志的查询、详情、删除、清空
+ * @description 提供登录日志的查询、详情、删除、清空
  *
  * @接口说明
  * - GET    /logininfor           获取日志列表（分页）

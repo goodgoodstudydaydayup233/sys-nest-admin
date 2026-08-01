@@ -1,6 +1,6 @@
 /**
  * 参数配置 API
- * @description 对标若依 sys_config，提供系统参数配置的增删改查及缓存刷新能力
+ * @description 提供系统参数配置的增删改查及缓存刷新能力
  *
  * @接口清单
  * - GET    /config                  获取参数配置列表（分页 + 筛选）

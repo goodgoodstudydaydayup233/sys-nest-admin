@@ -4,7 +4,7 @@ import { BaseQueryDto } from '../../../common/dto/base.dto';
 
 /**
  * 操作日志查询 DTO
- * @description 对标若依 SysOperLog 查询条件
+ * @description 操作日志查询条件
  *
  * @使用示例
  * ```ts

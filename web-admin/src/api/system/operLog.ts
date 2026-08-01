@@ -1,6 +1,6 @@
 /**
  * 操作日志 API
- * @description 对标若依操作日志接口，按后端 LogController 拆分
+ * @description 按后端 LogController 拆分
  *
  * @接口清单
  * - GET    /oper-log           获取操作日志列表（分页 + 筛选）

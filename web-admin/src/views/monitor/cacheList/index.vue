@@ -144,9 +144,9 @@
 <script setup lang="ts">
 /**
  * 缓存列表页面
- * @description 对标若依 monitor/cacheList，按业务前缀分组的三栏布局
+ * @description 按业务前缀分组的三栏布局
  *
- * @UI 对标（nest-admin/admin-vue3/src/views/monitor/cache/list.vue）
+ * @UI 布局
  * - 左栏(8)：缓存名称列表（sys_config/sys_dict 等业务前缀分组），点击切换，可清理整组
  * - 中栏(8)：键名列表（选中分组下的 key），点击查看，可清理单个
  * - 右栏(8)：缓存内容表单（只读）+ 清理全部按钮
@@ -256,7 +256,7 @@ async function handleClearCacheKey(cacheKey: string) {
   getCacheKeys(nowCacheName.value)
 }
 
-/** 键名展示：去除前缀（对标若依 keyFormatter） */
+/** 键名展示：去除前缀（keyFormatter） */
 function formatKey(cacheKey: string): string {
   // 去除当前缓存名称对应的前缀，只显示业务部分
   return cacheKey

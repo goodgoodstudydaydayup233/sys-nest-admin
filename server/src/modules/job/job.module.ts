@@ -13,7 +13,7 @@ import { JobLogController } from './job-log.controller';
 
 /**
  * 定时任务模块
- * @description 对标若依 ruoyi-quartz，提供动态 cron 调度、任务管理与调度日志
+ * @description 提供动态 cron 调度、任务管理与调度日志
  *
  * @example
  * 示例任务调用目标：

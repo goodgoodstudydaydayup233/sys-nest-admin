@@ -34,7 +34,7 @@
 <script setup lang="ts">
 /**
  * TagsView - 标签页导航组件
- * @description 参考若依/nest-admin 实现，展示已访问路由标签，支持关闭、右键菜单、缓存联动
+ * @description 展示已访问路由标签，支持关闭、右键菜单、缓存联动
  *
  * @特性
  * - 根据路由 visitedViews 自动生成标签
@@ -335,7 +335,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 /**
- * TagsView 样式（参考若依）
+ * TagsView 样式
  * - 使用 Element Plus CSS 变量适配浅色/深色主题
  * - 当前标签主题色背景
  */

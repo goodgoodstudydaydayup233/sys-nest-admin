@@ -1,7 +1,7 @@
 /**
  * useMenu - 菜单数据 Hook
  * @description 从 Vue Router 路由配置中自动提取侧边栏菜单数据
- * 遵循若依/芋道开源项目规范：
+ * 遵循通用后台规范：
  *   - 单子路由：父级 meta 置空，菜单中不显示目录，直接显示子路由
  *   - 多子路由：父级 meta 携带目录 title/icon，菜单显示为可展开目录
  *   - alwaysShow: true 强制显示目录（即使只有一个子路由）

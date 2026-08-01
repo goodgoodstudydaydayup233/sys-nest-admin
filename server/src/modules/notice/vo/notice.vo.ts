@@ -3,7 +3,7 @@ import { BaseVo } from '../../../common/vo/base.vo';
 
 /**
  * 通知公告视图对象
- * @description 对标若依 SysNoticeVo
+ * @description SysNoticeVo
  */
 export class NoticeVo extends BaseVo {
   @ApiProperty({ description: '通知标题' })

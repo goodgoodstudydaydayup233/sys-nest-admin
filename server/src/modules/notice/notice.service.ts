@@ -10,7 +10,7 @@ import { ErrorCodeEnum } from '../../common/enums/error-code.enum';
 
 /**
  * 通知公告服务
- * @description 对标若依 SysNoticeService，提供通知公告的 CRUD 能力
+ * @description 提供通知公告的 CRUD 能力
  *
  * @业务规则
  * - 通知类型：1-通知 2-公告

@@ -3,7 +3,7 @@ import { BaseEntity } from '../../../common/entities/base.entity';
 
 /**
  * 操作日志实体
- * @description 对标若依 sys_oper_log，记录系统操作行为
+ * @description 记录系统操作行为
  */
 @Entity('sys_oper_log')
 export class OperationLog extends BaseEntity {

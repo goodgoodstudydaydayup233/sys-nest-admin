@@ -200,7 +200,7 @@
 <script setup lang="ts">
 /**
  * 操作日志页面
- * @description 对标若依 operlog，提供操作日志的查询、详情、删除、清空
+ * @description 提供操作日志的查询、详情、删除、清空
  *
  * @接口说明
  * - GET    /oper-log           获取日志列表（分页）

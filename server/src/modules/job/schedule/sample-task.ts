@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 /**
- * 示例定时任务 Bean（对标若依 RyTask）
+ * 示例定时任务 Bean（RyTask）
  * @description 演示无参、单参、多参任务的调用方式。
  * 调用目标字符串格式：`beanName.method(arg1, arg2, ...)`，如 `ryTask.ryParams('ry')`
  *

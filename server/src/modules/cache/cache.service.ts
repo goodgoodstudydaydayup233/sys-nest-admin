@@ -6,7 +6,7 @@ import { getCacheNameDefinitions, CacheNameDefinition } from './cache.constants'
 
 /**
  * 缓存监控服务
- * @description 对标若依 RedisController，提供两块能力：
+ * @description 提供两块能力：
  *
  * 1. 缓存监控（cache/index.vue）：Redis 服务器信息 + 命令统计 + 内存
  *    - getMonitorInfo: 获取 Redis 信息（info 解析 + dbSize + 命令统计）
@@ -52,7 +52,7 @@ export class CacheService {
     return { info, dbSize, commandStats };
   }
 
-  // ==================== 缓存列表（按业务前缀分组，对标若依三栏） ====================
+  // ==================== 缓存列表（按业务前缀分组，三栏） ====================
 
   /**
    * 获取预定义的缓存名称列表

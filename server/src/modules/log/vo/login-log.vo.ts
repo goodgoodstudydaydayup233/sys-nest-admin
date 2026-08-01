@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 /**
  * 登录日志视图对象
- * @description 对标若依 SysLogininforVo
+ * @description SysLogininforVo
  */
 export class LoginLogVo {
   @ApiProperty({ description: '访问ID' })

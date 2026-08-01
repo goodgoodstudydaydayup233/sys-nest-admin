@@ -17,7 +17,7 @@ import { BusinessType } from '../../common/enums/business-type.enum';
 
 /**
  * 在线用户控制器
- * @description 对标若依 SysUserOnlineController，提供在线用户监控与强退能力
+ * @description 提供在线用户监控与强退能力
  *
  * @路由前缀 /{dev-api|prod-api}/monitor/online
  *

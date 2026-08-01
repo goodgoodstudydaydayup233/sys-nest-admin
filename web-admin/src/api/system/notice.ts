@@ -1,6 +1,6 @@
 /**
  * 通知公告 API
- * @description 对标若依 sys_notice，提供通知公告的增删改查能力
+ * @description 提供通知公告的增删改查能力
  *
  * @接口清单
  * - GET    /system/notice           获取通知公告列表（分页 + 筛选）

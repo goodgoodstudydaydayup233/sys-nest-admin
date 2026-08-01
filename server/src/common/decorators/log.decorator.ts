@@ -18,7 +18,7 @@ export interface LogMetadata {
 
 /**
  * 操作日志装饰器
- * @description 对标若依 @Log 注解，标注在 Controller 方法上，由全局 LoggingInterceptor 拦截记录操作日志。
+ * @description 标注在 Controller 方法上，由全局 LoggingInterceptor 拦截记录操作日志。
  * 只有标注了 @Log 的接口才会被记录，避免日志量过大。
  *
  * @param title 模块标题，如"用户管理"

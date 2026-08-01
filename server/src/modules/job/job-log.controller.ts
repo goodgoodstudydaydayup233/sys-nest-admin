@@ -20,7 +20,7 @@ import { BatchDeleteDto } from '../role/dto/batch-delete.dto';
 
 /**
  * 定时任务调度日志控制器
- * @description 对标若依 SysJobLogController，提供调度日志的查询、详情、批量删除、清空
+ * @description 提供调度日志的查询、详情、批量删除、清空
  *
  * @路由前缀 /{dev-api|prod-api}/job-log
  * @接口列表

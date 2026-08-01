@@ -6,7 +6,7 @@ import { LoginLogVo, LoginLogListVo } from './vo/login-log.vo';
 
 /**
  * 登录日志服务
- * @description 对标若依 SysLogininforServiceImpl，提供登录日志的查询、删除、清空能力，
+ * @description 提供登录日志的查询、删除、清空能力，
  * 并供 AuthService 调用以异步记录登录日志。
  */
 @Injectable()

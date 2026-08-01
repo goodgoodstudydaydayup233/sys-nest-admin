@@ -19,7 +19,7 @@
 <script setup lang="ts">
 /**
  * Breadcrumb - 面包屑导航组件
- * @description 参考若依/nest-admin 实现，根据当前路由 matched 自动生成面包屑
+ * @description 根据当前路由 matched 自动生成面包屑
  *
  * @特性
  * - 首项固定为「首页」（/dashboard），可在非首页页面点击返回
@@ -53,10 +53,7 @@ function getBreadcrumb() {
 
   const first = matched[0]
   if (first && first.path !== '/dashboard') {
-    matched = [
-      { path: '/dashboard', meta: { title: '首页' } } as RouteLocationMatched,
-      ...matched,
-    ]
+    matched = [{ path: '/dashboard', meta: { title: '首页' } } as RouteLocationMatched, ...matched]
   }
 
   levelList.value = matched.filter(
@@ -87,7 +84,7 @@ watch(
 
 <style lang="scss" scoped>
 /**
- * 面包屑样式（参考若依）
+ * 面包屑样式
  * - inline-block 布局，紧贴折叠按钮右侧
  * - 行高与 navbar 一致（50px）
  * - 末项灰色不可点击，可点击项 hover 变为主题色

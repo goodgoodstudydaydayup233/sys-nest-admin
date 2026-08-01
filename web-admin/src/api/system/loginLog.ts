@@ -1,6 +1,6 @@
 /**
  * 登录日志 API
- * @description 对标若依登录日志接口，按后端 LoginLogController 拆分
+ * @description 按后端 LoginLogController 拆分
  *
  * @接口清单
  * - GET    /logininfor           获取登录日志列表（分页 + 筛选）

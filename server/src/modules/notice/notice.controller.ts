@@ -23,7 +23,7 @@ import { BusinessType } from '../../common/enums/business-type.enum';
 
 /**
  * 通知公告控制器
- * @description 对标若依 SysNoticeController，提供通知公告 CRUD 接口
+ * @description 提供通知公告 CRUD 接口
  *
  * @路由前缀 /{dev-api|prod-api}/system/notice
  *

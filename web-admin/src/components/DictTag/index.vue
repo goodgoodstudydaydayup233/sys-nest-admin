@@ -1,7 +1,7 @@
 <template>
   <!--
     DictTag 字典标签组件
-    @description 根据字典数据和值渲染 el-tag，对标若依 DictTag
+    @description 根据字典数据和值渲染 el-tag
     @example
     ```vue
     <DictTag :options="sexDict" :value="row.sex" />

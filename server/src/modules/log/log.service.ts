@@ -6,7 +6,7 @@ import { LogVo, LogListVo } from './vo/log.vo';
 
 /**
  * 操作日志服务
- * @description 对标若依 SysOperLogServiceImpl，提供操作日志的查询、删除、清空能力，
+ * @description 提供操作日志的查询、删除、清空能力，
  * 并供 LoggingInterceptor 调用以异步记录操作日志。
  */
 @Injectable()

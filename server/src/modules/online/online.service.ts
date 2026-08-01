@@ -7,7 +7,7 @@ import { ErrorCodeEnum } from '../../common/enums/error-code.enum';
 
 /**
  * 在线用户服务
- * @description 对标若依 SysUserOnlineController，基于 Redis 提供：
+ * @description 基于 Redis 提供：
  *
  * 1. 列出在线用户：扫描 online:token:* 前缀所有 key，返回用户/IP/UA/登录时间
  * 2. 强退用户：删除该 token 的在线记录 + 加入 token 黑名单（使该 token 立即失效）

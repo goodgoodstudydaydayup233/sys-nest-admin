@@ -3,7 +3,7 @@ import { BaseEntity } from '../../../common/entities/base.entity';
 
 /**
  * 通知公告实体
- * @description 对标若依 sys_notice 表
+ * @description 对应 sys_notice 表
  *
  * @字段说明
  * - noticeTitle: 通知标题

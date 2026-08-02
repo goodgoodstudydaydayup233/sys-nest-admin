@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, Req, UseGuards, ParseIntPipe } from '@nestjs/common';
+import type { Request } from 'express';
 import { FieldGroupService } from './field-group.service';
 import { CreateFieldGroupDto } from './dto/create-field-group.dto';
 import { UpdateFieldGroupDto } from './dto/update-field-group.dto';
@@ -47,7 +48,7 @@ export class FieldGroupController {
   @ApiResponse({ status: 200, description: '成功' })
   @Permission('system:fieldGroup:add')
   @Log('字段分组', BusinessType.INSERT)
-  async create(@Body() createFieldGroupDto: CreateFieldGroupDto, @Req() req: any): Promise<void> {
+  async create(@Body() createFieldGroupDto: CreateFieldGroupDto, @Req() req: Request): Promise<void> {
     await this.fieldGroupService.create(createFieldGroupDto, req.userInfo?.username);
   }
 
@@ -59,7 +60,7 @@ export class FieldGroupController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateFieldGroupDto: UpdateFieldGroupDto,
-    @Req() req: any,
+    @Req() req: Request,
   ): Promise<void> {
     await this.fieldGroupService.update(id, updateFieldGroupDto, req.userInfo?.username);
   }

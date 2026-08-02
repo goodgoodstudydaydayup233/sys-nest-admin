@@ -328,7 +328,7 @@ web-admin/
 2. 导入初始化脚本：
 
    ```bash
-   mysql -u root -p h-vue < server/sql/init.sql
+   mysql -u root -p sys_nest_server < server/sql/init.sql
    ```
 
    或使用 Navicat / DBeaver 等工具执行 [`server/sql/init.sql`](server/sql/init.sql)。

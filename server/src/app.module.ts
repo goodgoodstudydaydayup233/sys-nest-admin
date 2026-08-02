@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppConfigModule } from './core/config/config.module';
 import { DatabaseModule } from './core/database/database.module';
 import { AppConfigRedisModule } from './core/redis/redis.module';
+import { RateLimiterModule } from './common/services/rate-limiter.module';
 import { LogModule } from './modules/log/log.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AuthCacheModule } from './modules/auth/auth-cache.module';
@@ -23,6 +24,7 @@ import { FileModule } from './common/services/file.module';
     AppConfigModule,
     DatabaseModule,
     AppConfigRedisModule,
+    RateLimiterModule,
     FileModule,
     LogModule,
     AuthModule,

@@ -10,6 +10,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import { NoticeService } from './notice.service';
 import { CreateNoticeDto } from './dto/create-notice.dto';
 import { UpdateNoticeDto } from './dto/update-notice.dto';
@@ -71,9 +72,9 @@ export class NoticeController {
   @Log('通知公告', BusinessType.INSERT)
   async create(
     @Body() createNoticeDto: CreateNoticeDto,
-    @Req() req: any,
+    @Req() req: Request,
   ): Promise<NoticeVo> {
-    return this.noticeService.create(createNoticeDto, req.userInfo?.username);
+    return this.noticeService.create(createNoticeDto, req.userInfo!.username);
   }
 
   @Put(':id')
@@ -84,9 +85,9 @@ export class NoticeController {
   async update(
     @Param('id') id: number,
     @Body() updateNoticeDto: UpdateNoticeDto,
-    @Req() req: any,
+    @Req() req: Request,
   ): Promise<NoticeVo | null> {
-    return this.noticeService.update(id, updateNoticeDto, req.userInfo?.username);
+    return this.noticeService.update(id, updateNoticeDto, req.userInfo!.username);
   }
 
   @Delete(':id')

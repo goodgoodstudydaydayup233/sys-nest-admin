@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, Req, UseGuards, ParseIntPipe } from '@nestjs/common';
+import type { Request } from 'express';
 import { MenuService } from './menu.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
@@ -53,7 +54,7 @@ export class MenuController {
   @ApiResponse({ status: 200, description: '成功' })
   @Permission('system:menu:add')
   @Log('菜单管理', BusinessType.INSERT)
-  async create(@Body() createMenuDto: CreateMenuDto, @Req() req: any): Promise<void> {
+  async create(@Body() createMenuDto: CreateMenuDto, @Req() req: Request): Promise<void> {
     await this.menuService.create(createMenuDto, req.userInfo?.username);
   }
 
@@ -65,7 +66,7 @@ export class MenuController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateMenuDto: UpdateMenuDto,
-    @Req() req: any,
+    @Req() req: Request,
   ): Promise<void> {
     await this.menuService.update(id, updateMenuDto, req.userInfo?.username);
   }

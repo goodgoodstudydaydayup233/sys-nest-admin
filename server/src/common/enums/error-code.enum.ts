@@ -46,6 +46,9 @@ export enum ErrorCodeEnum {
   JOB_BEAN_NOT_FOUND = 8003,
   JOB_METHOD_NOT_FOUND = 8004,
   JOB_ALREADY_RUNNING = 8005,
+
+  // 限流错误码 9xxx
+  RATE_LIMIT_EXCEEDED = 9001,
 }
 
 export const ErrorMessageMap: Record<ErrorCodeEnum, string> = {
@@ -88,4 +91,6 @@ export const ErrorMessageMap: Record<ErrorCodeEnum, string> = {
   [ErrorCodeEnum.JOB_BEAN_NOT_FOUND]: '任务Bean不存在',
   [ErrorCodeEnum.JOB_METHOD_NOT_FOUND]: '任务方法不存在',
   [ErrorCodeEnum.JOB_ALREADY_RUNNING]: '任务正在执行，禁止并发',
+
+  [ErrorCodeEnum.RATE_LIMIT_EXCEEDED]: '请求过于频繁，请稍候再试',
 };

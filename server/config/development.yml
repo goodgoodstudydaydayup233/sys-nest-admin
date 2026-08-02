@@ -16,6 +16,34 @@ swagger:
   # Swagger Servers 中展示的基础地址（需包含环境前缀）
   serverUrl: http://localhost:3000/dev-api
 
+# 限流配置
+# 三层限流策略：
+# - global：全局总请求数限流，不分 IP 不分接口，保护服务器整体 QPS（默认 60秒5000次）
+# - default：按"接口 + IP"维度，防止单 IP 刷单接口（默认 60秒100次）
+# - ip：按"IP"维度，防止单 IP 刷所有接口（默认 60秒1000次）
+# 方法上标注 @RateLimiter 装饰器可覆盖 default 配置
+rateLimit:
+  # 是否启用限流
+  enabled: true
+  # 全局总请求数限流（不分 IP、不分接口）
+  global:
+    # 时间窗口（秒）
+    time: 60
+    # 时间窗口内最大请求次数
+    count: 5000
+  # 默认限流（按"接口 + IP"维度）
+  default:
+    # 时间窗口（秒）
+    time: 60
+    # 时间窗口内最大请求次数
+    count: 100
+  # 单一 IP 全局限流（按"IP"维度）
+  ip:
+    # 时间窗口（秒）
+    time: 60
+    # 时间窗口内最大请求次数
+    count: 10000
+
 # 上传文件配置
 upload:
   # 上传文件保存路径

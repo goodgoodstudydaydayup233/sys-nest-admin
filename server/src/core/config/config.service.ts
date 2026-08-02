@@ -65,7 +65,40 @@ export class AppConfigService {
   get swagger() {
     return {
       // Swagger Servers 展示的基础地址，需包含当前环境接口前缀
-      serverUrl: this.configService.get<string>('swagger.serverUrl', `http://localhost:${this.server.port}/${this.app.apiPrefix}`),
+      serverUrl: this.configService.get<string>(
+        'swagger.serverUrl',
+        `http://localhost:${this.server.port}/${this.app.apiPrefix}`,
+      ),
+    };
+  }
+
+  /**
+   * 限流配置
+   * @description 三层限流策略：
+   * - global：全局总请求数限流，不分 IP 不分接口，保护服务器整体 QPS
+   * - default：按"接口 + IP"维度限流，防止单 IP 刷单接口
+   * - ip：按"IP"维度限流，防止单 IP 刷所有接口
+   * 装饰器 @RateLimiter 可在方法级别覆盖 default 配置
+   */
+  get rateLimit() {
+    return {
+      // 是否启用限流
+      enabled: this.configService.get<boolean>('rateLimit.enabled', true),
+      // 全局总请求数限流（不分 IP、不分接口，保护服务器整体）
+      global: {
+        time: this.configService.get<number>('rateLimit.global.time', 60),
+        count: this.configService.get<number>('rateLimit.global.count', 5000),
+      },
+      // 默认限流（按"接口 + IP"维度，作用于所有未标注 @RateLimiter 的接口）
+      default: {
+        time: this.configService.get<number>('rateLimit.default.time', 60),
+        count: this.configService.get<number>('rateLimit.default.count', 100),
+      },
+      // 单一 IP 全局限流（按"IP"维度，限制单 IP 对所有接口的总请求数）
+      ip: {
+        time: this.configService.get<number>('rateLimit.ip.time', 60),
+        count: this.configService.get<number>('rateLimit.ip.count', 1000),
+      },
     };
   }
 

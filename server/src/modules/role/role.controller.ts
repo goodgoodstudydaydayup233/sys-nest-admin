@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, Req, UseGuards, ParseIntPipe } from '@nestjs/common';
+import type { Request } from 'express';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
@@ -47,7 +48,7 @@ export class RoleController {
   @ApiResponse({ status: 200, description: '成功' })
   @Permission('system:role:add')
   @Log('角色管理', BusinessType.INSERT)
-  async create(@Body() createRoleDto: CreateRoleDto, @Req() req: any): Promise<void> {
+  async create(@Body() createRoleDto: CreateRoleDto, @Req() req: Request): Promise<void> {
     await this.roleService.create(createRoleDto, req.userInfo?.username);
   }
 
@@ -59,7 +60,7 @@ export class RoleController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateRoleDto: UpdateRoleDto,
-    @Req() req: any,
+    @Req() req: Request,
   ): Promise<void> {
     await this.roleService.update(id, updateRoleDto, req.userInfo?.username);
   }

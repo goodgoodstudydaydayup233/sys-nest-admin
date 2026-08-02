@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, Req, UseGuards, ParseIntPipe } from '@nestjs/common';
+import type { Request } from 'express';
 import { DictDataService } from './dict-data.service';
 import { CreateDictDataDto } from './dto/create-dict-data.dto';
 import { UpdateDictDataDto } from './dto/update-dict-data.dto';
@@ -47,7 +48,7 @@ export class DictDataController {
   @ApiResponse({ status: 200, description: '成功' })
   @Permission('system:dictData:add')
   @Log('字典数据', BusinessType.INSERT)
-  async create(@Body() createDictDataDto: CreateDictDataDto, @Req() req: any): Promise<void> {
+  async create(@Body() createDictDataDto: CreateDictDataDto, @Req() req: Request): Promise<void> {
     await this.dictDataService.create(createDictDataDto, req.userInfo?.username);
   }
 
@@ -59,7 +60,7 @@ export class DictDataController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDictDataDto: UpdateDictDataDto,
-    @Req() req: any,
+    @Req() req: Request,
   ): Promise<void> {
     await this.dictDataService.update(id, updateDictDataDto, req.userInfo?.username);
   }

@@ -13,6 +13,7 @@ import {
   UploadedFile,
   ParseIntPipe,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -26,14 +27,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { BatchDeleteDto } from './dto/batch-delete.dto';
 import { UserVo, UserListVo } from './vo/user.vo';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBearerAuth,
-  ApiResponse,
-  ApiConsumes,
-  ApiBody,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { Permission } from '../../common/decorators/permission.decorator';
 import { Log } from '../../common/decorators/log.decorator';
@@ -78,7 +72,7 @@ export class UserController {
   async create(
     @Body() createUserDto: CreateUserDto,
     @UploadedFile() file: Express.Multer.File,
-    @Req() req: any,
+    @Req() req: Request,
   ): Promise<void> {
     if (file) {
       const result = await this.fileService.saveFile(file, UploadPathEnum.AVATAR);
@@ -97,29 +91,22 @@ export class UserController {
   async updateProfile(
     @Body() updateProfileDto: UpdateProfileDto,
     @UploadedFile() file: Express.Multer.File,
-    @Req() req: any,
+    @Req() req: Request,
   ): Promise<void> {
     if (file) {
       const result = await this.fileService.saveFile(file, UploadPathEnum.AVATAR);
       updateProfileDto.avatar = result.accessUrl;
     }
-    await this.userService.updateProfile(
-      req.userInfo?.id,
-      updateProfileDto,
-      req.userInfo?.username,
-    );
+    await this.userService.updateProfile(req.userInfo!.id, updateProfileDto, req.userInfo!.username);
   }
 
   @Put('password')
   @ApiOperation({ summary: '修改自身密码' })
   @ApiResponse({ status: 200, description: '成功' })
   @Log('个人信息', BusinessType.UPDATE)
-  async changeOwnPassword(
-    @Body() changePasswordDto: ChangePasswordDto,
-    @Req() req: any,
-  ): Promise<void> {
+  async changeOwnPassword(@Body() changePasswordDto: ChangePasswordDto, @Req() req: Request): Promise<void> {
     await this.userService.changePassword(
-      req.userInfo?.id,
+      req.userInfo!.id,
       changePasswordDto.oldPassword,
       changePasswordDto.newPassword,
     );
@@ -132,12 +119,9 @@ export class UserController {
   @ApiResponse({ status: 200, description: '成功' })
   @UseInterceptors(FileInterceptor('avatarFile'))
   @Log('个人信息', BusinessType.UPDATE)
-  async updateAvatar(
-    @UploadedFile() file: Express.Multer.File,
-    @Req() req: any,
-  ): Promise<void> {
+  async updateAvatar(@UploadedFile() file: Express.Multer.File, @Req() req: Request): Promise<void> {
     const result = await this.fileService.saveFile(file, UploadPathEnum.AVATAR);
-    await this.userService.updateAvatar(req.userInfo?.id, result.accessUrl);
+    await this.userService.updateAvatar(req.userInfo!.id, result.accessUrl);
   }
 
   @Put(':id')
@@ -152,7 +136,7 @@ export class UserController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
     @UploadedFile() file: Express.Multer.File,
-    @Req() req: any,
+    @Req() req: Request,
   ): Promise<void> {
     if (file) {
       const result = await this.fileService.saveFile(file, UploadPathEnum.AVATAR);
@@ -188,11 +172,7 @@ export class UserController {
     @Param('id', ParseIntPipe) id: number,
     @Body() changePasswordDto: ChangePasswordDto,
   ): Promise<void> {
-    await this.userService.changePassword(
-      id,
-      changePasswordDto.oldPassword,
-      changePasswordDto.newPassword,
-    );
+    await this.userService.changePassword(id, changePasswordDto.oldPassword, changePasswordDto.newPassword);
   }
 
   @Put(':id/resetPassword')

@@ -5,8 +5,8 @@ import { AppConfigService } from './core/config/config.service';
 import { ValidationPipe } from '@nestjs/common';
 import { join } from 'path';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import type { OpenAPIObject } from '@nestjs/swagger';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { RateLimitInterceptor } from './common/interceptors/rate-limit.interceptor';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { BusinessExceptionFilter } from './common/filters/business-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -14,6 +14,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { PermissionGuard } from './common/guards/permission.guard';
 import { LogService } from './modules/log/log.service';
 import { AuthCacheService } from './modules/auth/auth-cache.service';
+import { RateLimiterService } from './common/services/rate-limiter.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -23,15 +24,14 @@ async function bootstrap() {
   const reflector = app.get(Reflector);
   const logService = app.get(LogService);
   const authCacheService = app.get(AuthCacheService);
+  const rateLimiterService = app.get(RateLimiterService);
 
   // 全局过滤器
-  app.useGlobalFilters(
-    new HttpExceptionFilter(),
-    new BusinessExceptionFilter(),
-  );
+  app.useGlobalFilters(new HttpExceptionFilter(), new BusinessExceptionFilter());
 
-  // 全局拦截器
+  // 全局拦截器（执行顺序：从上到下，限流需在最前面）
   app.useGlobalInterceptors(
+    new RateLimitInterceptor(rateLimiterService, configService, reflector),
     new LoggingInterceptor(logService, reflector),
     new TransformInterceptor(),
   );
@@ -47,10 +47,7 @@ async function bootstrap() {
   JwtAuthGuard.setConfigService(configService);
 
   // 全局守卫
-  app.useGlobalGuards(
-    new JwtAuthGuard(),
-    new PermissionGuard(reflector, configService, authCacheService),
-  );
+  app.useGlobalGuards(new JwtAuthGuard(), new PermissionGuard(reflector, configService, authCacheService));
 
   // 全局验证管道
   app.useGlobalPipes(
@@ -75,10 +72,7 @@ async function bootstrap() {
   // 将 document.paths 中的环境前缀移除，确保接口路径仅展示模块级路径
   const prefixPattern = new RegExp(`^/${apiPrefix}`);
   document.paths = Object.fromEntries(
-    Object.entries(document.paths).map(([path, value]) => [
-      path.replace(prefixPattern, '') || '/',
-      value,
-    ]),
+    Object.entries(document.paths).map(([path, value]) => [path.replace(prefixPattern, '') || '/', value]),
   );
 
   SwaggerModule.setup('api', app, document);
@@ -89,8 +83,6 @@ async function bootstrap() {
   console.log(`Application is running on: http://localhost:${port}`);
   console.log(`API prefix: /${apiPrefix}`);
   console.log(`Swagger API docs: http://localhost:${port}/api`);
-  console.log(
-    `Swagger JSON (for Apifox import): http://localhost:${port}/api-json`,
-  );
+  console.log(`Swagger JSON (for Apifox import): http://localhost:${port}/api-json`);
 }
 bootstrap();

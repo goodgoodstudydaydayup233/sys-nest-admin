@@ -10,6 +10,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import { ConfigService } from './config.service';
 import { CreateConfigDto } from './dto/create-config.dto';
 import { UpdateConfigDto } from './dto/update-config.dto';
@@ -72,9 +73,9 @@ export class ConfigController {
   @Log('参数配置', BusinessType.INSERT)
   async create(
     @Body() createConfigDto: CreateConfigDto,
-    @Req() req: any,
+    @Req() req: Request,
   ): Promise<void> {
-    await this.configService.create(createConfigDto, req.userInfo?.username);
+    await this.configService.create(createConfigDto, req.userInfo!.username);
   }
 
   @Put(':id')
@@ -85,12 +86,12 @@ export class ConfigController {
   async update(
     @Param('id') id: number,
     @Body() updateConfigDto: UpdateConfigDto,
-    @Req() req: any,
+    @Req() req: Request,
   ): Promise<void> {
     await this.configService.update(
       id,
       updateConfigDto,
-      req.userInfo?.username,
+      req.userInfo!.username,
     );
   }
 

@@ -68,7 +68,7 @@ redis:
   host: localhost
   port: 6379
   password: ''
-  db: 2
+  db: 1
 
 # JWT配置
 jwt:

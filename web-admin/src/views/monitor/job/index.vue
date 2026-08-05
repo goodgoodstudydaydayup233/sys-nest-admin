@@ -170,7 +170,7 @@
                 <span
                   >调用方法
                   <el-tooltip
-                    content="调用目标格式：Bean名称.方法名(参数)，参数支持字符串、数字、布尔值。示例：ryTask.ryParams('ry')"
+                    content="调用目标格式：Bean名称.方法名(参数)，参数支持字符串、数字、布尔值。示例：stTask.stParams('st')"
                     placement="top"
                   >
                     <el-icon style="vertical-align: middle; cursor: help"
@@ -181,7 +181,7 @@
               </template>
               <el-input
                 v-model="formData.invokeTarget"
-                placeholder="Bean调用示例：ryTask.ryParams('ry')"
+                placeholder="Bean调用示例：stTask.stParams('st')"
               />
             </el-form-item>
           </el-col>

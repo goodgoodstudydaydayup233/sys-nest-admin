@@ -9,7 +9,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
  * {
  *   jobName: '系统默认（无参）',
  *   jobGroup: 'DEFAULT',
- *   invokeTarget: "ryTask.ryNoParams()",
+ *   invokeTarget: "stTask.stNoParams()",
  *   cronExpression: '0/10 * * * * ?',
  *   misfirePolicy: '3',
  *   concurrent: '1',
@@ -29,7 +29,7 @@ export class CreateJobDto {
   @IsOptional()
   jobGroup?: string;
 
-  @ApiProperty({ description: "调用目标字符串，如 ryTask.ryParams('ry')" })
+  @ApiProperty({ description: "调用目标字符串，如 stTask.stParams('st')" })
   @IsString()
   @IsNotEmpty({ message: '调用目标字符串不能为空' })
   invokeTarget: string;

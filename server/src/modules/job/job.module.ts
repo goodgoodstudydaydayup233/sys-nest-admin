@@ -17,9 +17,9 @@ import { JobLogController } from './job-log.controller';
  *
  * @example
  * 示例任务调用目标：
- * - ryTask.ryNoParams()
- * - ryTask.ryParams('ry')
- * - ryTask.ryMultipleParams('ry', 1, true)
+ * - stTask.stNoParams()
+ * - stTask.stParams('st')
+ * - stTask.stMultipleParams('st', 1, true)
  */
 @Module({
   imports: [TypeOrmModule.forFeature([SysJob, SysJobLog])],
@@ -32,7 +32,7 @@ import { JobLogController } from './job-log.controller';
     JobLogService,
     SampleTask,
     // 以 beanName 作为 token 注册，供 invokeTarget 解析调用
-    { provide: 'ryTask', useClass: SampleTask },
+    { provide: 'stTask', useClass: SampleTask },
   ],
 })
 export class JobModule {}

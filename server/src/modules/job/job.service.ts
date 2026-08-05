@@ -23,7 +23,7 @@ import { ErrorCodeEnum } from '../../common/enums/error-code.enum';
  * - concurrent=1（禁止）时，运行中跳过本次触发
  *
  * @调用目标格式
- * `beanName.method(arg1, arg2, ...)`，参数支持 string/number/boolean，如 `ryTask.ryParams('ry')`
+ * `beanName.method(arg1, arg2, ...)`，参数支持 string/number/boolean，如 `stTask.stParams('st')`
  */
 @Injectable()
 export class JobService implements OnModuleInit {
@@ -236,7 +236,7 @@ export class JobService implements OnModuleInit {
   /**
    * 解析并调用目标方法
    * @example
-   * invokeMethod("ryTask.ryParams('ry')") → 调用 ryTask.ryParams('ry')
+   * invokeMethod("stTask.stParams('st')") → 调用 stTask.stParams('st')
    */
   private async invokeMethod(invokeTarget: string): Promise<string> {
     const match = invokeTarget.match(/^(\w+)\.(\w+)\((.*)\)$/);

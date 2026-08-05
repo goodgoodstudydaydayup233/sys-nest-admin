@@ -61,8 +61,8 @@ async function bootstrap() {
   // 接口路径中去掉环境前缀，统一在 Servers 中展示完整基础地址
   const swaggerServerUrl = configService.swagger.serverUrl;
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('H Admin API')
-    .setDescription('H Admin 后台管理系统接口文档')
+    .setTitle('sys-nest-admin API')
+    .setDescription('sys-nest-admin 后台管理系统接口文档')
     .setVersion('1.0')
     .addServer(swaggerServerUrl)
     .addBearerAuth()

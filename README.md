@@ -252,7 +252,7 @@ web-admin/
 | `server.port` | 3000 | 后端端口 |
 | `app.apiPrefix` | dev-api（开发）/ prod-api（生产） | 全局接口前缀 |
 | `swagger.serverUrl` | `http://localhost:3000/dev-api` / `https://nest-admin.dooring.vip/prod-api` | Swagger Servers 展示地址，包含环境前缀 |
-| `database` | localhost:3306 / h-vue | MySQL 连接，开发环境 `synchronize: true` |
+| `database` | localhost:3306 / sys_nest_server | MySQL 连接，开发环境 `synchronize: true` |
 | `redis` | localhost:6379 db=2 | Redis 连接 |
 | `jwt.accessTokenExpiresIn` | 2h | 访问 Token 有效期 |
 | `jwt.refreshTokenExpiresIn` | 7d | 刷新 Token 有效期 |
@@ -319,12 +319,12 @@ web-admin/
 
 - Node.js `^20.19.0 || >=22.12.0`
 - pnpm（推荐最新版）
-- MySQL 8+（开发库默认 `h-vue`）
+- MySQL 8+（开发库默认 `sys_nest_server`）
 - Redis（默认 db=2）
 
 ### 1. 初始化数据库
 
-1. 创建数据库 `h-vue`（utf8mb4）。
+1. 创建数据库 `sys_nest_server`（utf8mb4）。
 2. 导入初始化脚本：
 
    ```bash

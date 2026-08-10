@@ -283,10 +283,10 @@ web-admin/
 
 页面采用 `.page-container`（flex column，padding 20px，gap 16px）包裹，自上而下：
 
-1. **筛选区** `search-card`：`el-card` + `el-form inline`，输入框 `clearable` + 回车搜索。
+1. **筛选区** `search-bar`：扁平 div（无 `el-card` 包裹），`el-form inline`，输入框 `clearable` + 回车搜索。
 2. **表格操作栏** `table-action-bar`：左侧新增/批量删除，右侧刷新。
-3. **表格区** `table-card`：`el-table`，首列多选、状态列用 `el-tag`、操作列 `fixed="right"`、危险操作 `el-popconfirm` 二次确认。
-4. **分页区** `pagination-wrapper`：`el-pagination`，`page-sizes=[10,20,50,100]`。
+3. **表格区**：裸 `el-table`（无 `el-card` 包裹、无边框），首列多选、状态列用 `el-tag`、操作列 `fixed="right"`、危险操作 `el-popconfirm` 二次确认；不传 `border` 属性，全局样式已移除竖向列分隔线并保留行间分隔线，表头淡灰色 `#f8f8f8` 由全局样式统一处理。
+4. **分页区** `pagination-wrapper`：与表格分离的独立容器（不共用卡片），右对齐、上下留白 16px；`el-pagination` 使用 `page-sizes=[10,20,50,100]`。
 5. **新增/编辑弹窗** `el-dialog`（width 560px，`:close-on-click-modal="false"`，`@close` 重置表单）。
 
 ### 路由

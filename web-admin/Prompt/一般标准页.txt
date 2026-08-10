@@ -2,173 +2,177 @@
 ## 📋 通用标准管理页面生成提示词
 ### 一、技术栈与工程规范
 ```
-- 框架：Vue 3.5 + Composition API（<script setup lang="ts">）
-- 构建工具：Vite 8
-- UI 组件库：Element Plus 2.13+（自动导入，无需手动 import 组件）
-- 图标库：@element-plus/icons-vue（需手动 import 具体图标）
-- 类型系统：TypeScript 6.0+，严格模式
-- 状态管理：Pinia（仅在页面需要全局状态时使用）
-- 包管理器：pnpm
+- 框架：Vue 3.5 + Composition API（<script setup lang="ts">）
+- 构建工具：Vite 8
+- UI 组件库：Element Plus 2.13+（自动导入，无需手动 import 组件）
+- 图标库：@element-plus/icons-vue（需手动 import 具体图标）
+- 类型系统：TypeScript 6.0+，严格模式
+- 状态管理：Pinia（仅在页面需要全局状态时使用）
+- 包管理器：pnpm
 ```
 ### 二、代码风格规范
 ```
-- 分号：不加分号（semi: false）
-- 引号：单引号（singleQuote: true）
-- 行宽：100 字符（printWidth: 100）
-- ESLint 规则：vue/multi-word-component-names 已关闭，@typescript-eslint/
-no-explicit-any 已关闭
-- 代码注释：所有函数、变量、类型必须使用 JSDoc 注释说明用途，函数使用 
-@description、@param、@example 标签
-- 文件编码：UTF-8
-- 缩进：2 空格
+- 分号：不加分号（semi: false）
+- 引号：单引号（singleQuote: true）
+- 行宽：100 字符（printWidth: 100）
+- ESLint 规则：vue/multi-word-component-names 已关闭，@typescript-eslint/
+no-explicit-any 已关闭
+- 代码注释：所有函数、变量、类型必须使用 JSDoc 注释说明用途，函数使用 
+@description、@param、@example 标签
+- 文件编码：UTF-8
+- 缩进：2 空格
 ```
 ### 三、页面标准布局结构（从上到下）
 ```
-页面采用 .page-container 容器包裹，flex column 布局，gap: 16px，padding: 20px
+页面采用 .page-container 容器包裹，flex column 布局，gap: 16px，padding: 20px
 
 ┌─────────────────────────────────────────────┐
-│ ① 筛选区（search-card）                      │
-│    el-card shadow="never"                    │
-│    └── el-form inline（筛选条件 + 搜索/重置按钮）│
-│       - 表单项使用 el-input/el-select 等      │
-│       - 输入框支持 clearable + @keyup.enter 触发搜索│
-│       - el-select 使用 class 控制宽度（如180px）│
-│       - 按钮：搜索（type=primary + Search图标）│
-│              重置（默认 + Refresh图标）          │
+│ ① 筛选区（search-bar，扁平无卡片）            │
+│    div.search-bar（全局样式：无背景、无边框、无阴影）│
+│    └── el-form inline（筛选条件 + 搜索/重置按钮）│
+│       - 表单项使用 el-input/el-select 等      │
+│       - 输入框支持 clearable + @keyup.enter 触发搜索│
+│       - el-select 使用 class 控制宽度（如180px）│
+│       - 按钮：搜索（type=primary + Search图标）│
+│              重置（默认 + Refresh图标）          │
 ├─────────────────────────────────────────────┤
-│ ② 表格操作栏（table-action-bar）              │
-│    div，flex justify-between，两侧对齐          │
-│    左侧：操作按钮（新增 type=primary+ Plus图标 plain）│
-│          删除（type=danger + Delete图标，    │
-│          根据 selectedRows.length 控制 disabled）│
-│    右侧：刷新按钮（circle + Refresh图标）       │
+│ ② 表格操作栏（table-action-bar）              │
+│    div，flex justify-between，两侧对齐          │
+│    左侧：操作按钮（新增 type=primary+ Plus图标 plain）│
+│          删除（type=danger + Delete图标，    │
+│          根据 selectedRows.length 控制 disabled）│
+│    右侧：刷新按钮（circle + Refresh图标）       │
 ├─────────────────────────────────────────────┤
-│ ③ 表格区（table-card）                        │
-│    el-card shadow="never"，内部 padding: 0     │
-│    └── el-table                               │
-│        - v-loading="loading"                  │
-│        - stripe 斑马纹                         │
-│        - header-cell-style + cell-style 居中    │
-│        - @selection-change 多选支持             │
-│        - 首列为 el-table-column type="selection"│
-│        - ID 列宽度 80，操作列 fixed="right"     │
-│        - 状态列使用 el-tag（success/danger）     │
-│        - 文本超长列设置 show-overflow-tooltip    │
-│        - 操作列使用 el-button link + 图标       │
-│        - 删除/危险操作使用 el-popconfirm 二次确认│
+│ ③ 表格区（裸 el-table，无卡片包裹、无边框）      │
+│    - 不传 border 属性，全局样式已移除竖向列分隔线、│
+│      仅保留行间分隔线（表格无边框风格）          │
+│    - 表头淡灰色 #f8f8f8（字色 #666、字重 600），│
+│      由全局样式统一处理，页面无需重复定义        │
+│    └── el-table                               │
+│        - v-loading="loading"                  │
+│        - stripe 斑马纹                         │
+│        - header-cell-style + cell-style 居中    │
+│        - @selection-change 多选支持             │
+│        - 首列为 el-table-column type="selection"│
+│        - ID 列宽度 80，操作列 fixed="right"     │
+│        - 状态列使用 el-tag（success/danger）     │
+│        - 文本超长列设置 show-overflow-tooltip    │
+│        - 操作列使用 el-button link + 图标       │
+│        - 删除/危险操作使用 el-popconfirm 二次确认│
 ├─────────────────────────────────────────────┤
-│ ④ 分页区（pagination-wrapper）                │
-│    div，flex justify-content: flex-end         │
-│    padding: 16px                               │
-│    └── el-pagination                           │
-│        - v-model:current-page / page-size      │
-│        - :page-sizes="[10, 20, 50, 100]"       │
-│        - layout="total, sizes, prev, pager,    │
-│           next, jumper"                        │
-│        - background                            │
-│        - @size-change / @current-change 触发查询 │
+│ ④ 分页区（pagination-wrapper，独立于表格）      │
+│    div，与表格分离，不共用卡片/不放在表格卡片内   │
+│    - 全局样式：flex + justify-content: flex-end │
+│      + padding: 16px 0（无背景、无边框）        │
+│    └── el-pagination                           │
+│        - v-model:current-page / page-size      │
+│        - :page-sizes="[10, 20, 50, 100]"       │
+│        - layout="total, sizes, prev, pager,    │
+│           next, jumper"                        │
+│        - background                            │
+│        - @size-change / @current-change 触发查询 │
 ├─────────────────────────────────────────────┤
-│ ⑤ 新增/编辑弹窗（el-dialog）                   │
-│    - width="560px"                             │
-│    - :close-on-click-modal="false"             │
-│    - @close 重置表单                            │
-│    - 标题根据 dialogType 动态切换               │
-│    └── el-form                                 │
-│        - ref="formRef"                         │
-│        - :model="formData"                     │
-│        - :rules="formRules"                    │
-│        - label-width="80px"                    │
-│        - 表单项按业务需求排列                    │
-│    └── #footer                                 │
-│        - 取消按钮（默认）                        │
-│        - 确定按钮（type=primary + loading状态）  │
+│ ⑤ 新增/编辑弹窗（el-dialog）                   │
+│    - width="560px"                             │
+│    - :close-on-click-modal="false"             │
+│    - @close 重置表单                            │
+│    - 标题根据 dialogType 动态切换               │
+│    └── el-form                                 │
+│        - ref="formRef"                         │
+│        - :model="formData"                     │
+│        - :rules="formRules"                    │
+│        - label-width="80px"                    │
+│        - 表单项按业务需求排列                    │
+│    └── #footer                                 │
+│        - 取消按钮（默认）                        │
+│        - 确定按钮（type=primary + loading状态）  │
 └─────────────────────────────────────────────┘
 ```
 ### 四、Script 代码组织结构（按顺序）
 ```
-<script setup lang="ts">
+<script setup lang="ts">
 /**
- * XxxManage - XXX管理页面
- * @description 功能概述
- *
- * @接口说明
- * - POST   /xxx                   创建
- * - GET    /xxx                   获取列表（分页+筛选）
- * - GET    /xxx/{id}              获取详情
- * - PUT    /xxx/{id}              修改
- * - DELETE /xxx/{id}              删除
- * - DELETE /xxx/batch             删除（如有）
- *
- * @布局说明
- * 上方 → 筛选区（el-card + el-form inline）
- * 中间 → 表格区（el-table + 操作列）
- * 下方 → 分页区（el-pagination）
- * 弹窗 → 新增/编辑（el-dialog + el-form）
- */
+ * XxxManage - XXX管理页面
+ * @description 功能概述
+ *
+ * @接口说明
+ * - POST   /xxx                   创建
+ * - GET    /xxx                   获取列表（分页+筛选）
+ * - GET    /xxx/{id}              获取详情
+ * - PUT    /xxx/{id}              修改
+ * - DELETE /xxx/{id}              删除
+ * - DELETE /xxx/batch             删除（如有）
+ *
+ * @布局说明
+ * 上方 → 筛选区（.search-bar 扁平容器 + el-form inline）
+ * 中间 → 表格区（裸 el-table 无卡片包裹 + 操作列）
+ * 下方 → 分页区（el-pagination 独立容器，与表格分离）
+ * 弹窗 → 新增/编辑（el-dialog + el-form）
+ */
 
-// ========== 1. 导入 ==========
-import { ref, reactive, onMounted, nextTick } from 'vue'
-import { Search, Refresh, Delete, Edit, Plus } from '@element-plus/
+// ========== 1. 导入 ==========
+import { ref, reactive, onMounted, nextTick } from 'vue'
+import { Search, Refresh, Delete, Edit, Plus } from '@element-plus/
 icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import type { FormInstance, FormRules } from 'element-plus'
-import { xxxApi } from '@/api/system'           // 按实际模块路径
-import type { XxxVo, QueryXxxParams, CreateXxxParams, UpdateXxxParams } 
-from '@/api/system'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
+import { xxxApi } from '@/api/system'           // 按实际模块路径
+import type { XxxVo, QueryXxxParams, CreateXxxParams, UpdateXxxParams } 
+from '@/api/system'
 
-// ========== 2. 列表相关 ==========
-const loading = ref(false)
-const tableData = ref<XxxVo[]>([])
-const total = ref(0)
-const queryParams = reactive<QueryXxxParams>({
-  page: 1,
-  pageSize: 10,
-  // ...筛选字段初始化为 undefined
+// ========== 2. 列表相关 ==========
+const loading = ref(false)
+const tableData = ref<XxxVo[]>([])
+const total = ref(0)
+const queryParams = reactive<QueryXxxParams>({
+  page: 1,
+  pageSize: 10,
+  // ...筛选字段初始化为 undefined
 })
 
-// 获取列表函数（async）
-async function fetchList() { ... }
+// 获取列表函数（async）
+async function fetchList() { ... }
 
-// 搜索（重置页码到1后查询）
-function handleSearch() { ... }
+// 搜索（重置页码到1后查询）
+function handleSearch() { ... }
 
-// 重置筛选条件（清空所有筛选字段 + 重置分页 + 重新查询）
-function handleReset() { ... }
+// 重置筛选条件（清空所有筛选字段 + 重置分页 + 重新查询）
+function handleReset() { ... }
 
-// ========== 3. 多选相关 ==========
-const selectedRows = ref<XxxVo[]>([])
-function handleSelectionChange(rows: XxxVo[]) { ... }
+// ========== 3. 多选相关 ==========
+const selectedRows = ref<XxxVo[]>([])
+function handleSelectionChange(rows: XxxVo[]) { ... }
 
-// 删除（二次确认后调用接口）
-async function handleBatchDelete() { ... }
+// 删除（二次确认后调用接口）
+async function handleBatchDelete() { ... }
 
-// 单条删除（通过 el-popconfirm 触发）
-async function handleDelete(row: XxxVo) { ... }
+// 单条删除（通过 el-popconfirm 触发）
+async function handleDelete(row: XxxVo) { ... }
 
-// ========== 4. 弹窗/表单相关 ==========
-const dialogVisible = ref(false)
-const dialogType = ref<'create' | 'edit'>('create')
-const submitLoading = ref(false)
-const formRef = ref<FormInstance>()
-const formData = reactive<CreateXxxParams & UpdateXxxParams & { id?: 
-number }>({ ... })
-const formRules: FormRules = { ... }
+// ========== 4. 弹窗/表单相关 ==========
+const dialogVisible = ref(false)
+const dialogType = ref<'create' | 'edit'>('create')
+const submitLoading = ref(false)
+const formRef = ref<FormInstance>()
+const formData = reactive<CreateXxxParams & UpdateXxxParams & { id?: 
+number }>({ ... })
+const formRules: FormRules = { ... }
 
-// 打开新增弹窗（重置表单初始值 → 打开弹窗 → clearValidate）
-function handleCreate() { ... }
+// 打开新增弹窗（重置表单初始值 → 打开弹窗 → clearValidate）
+function handleCreate() { ... }
 
-// 打开编辑弹窗（请求详情回填 → 打开弹窗 → clearValidate）
-async function handleEdit(row: XxxVo) { ... }
+// 打开编辑弹窗（请求详情回填 → 打开弹窗 → clearValidate）
+async function handleEdit(row: XxxVo) { ... }
 
-// 提交表单（validate → 根据 dialogType 调用创建/编辑接口 → 刷新列表）
-async function handleSubmit() { ... }
+// 提交表单（validate → 根据 dialogType 调用创建/编辑接口 → 刷新列表）
+async function handleSubmit() { ... }
 
-// 弹窗关闭回调（resetFields + 重置表单数据）
-function handleDialogClose() { ... }
+// 弹窗关闭回调（resetFields + 重置表单数据）
+function handleDialogClose() { ... }
 
-// ========== 5. 生命周期 ==========
-onMounted(() => {
-  fetchList()
+// ========== 5. 生命周期 ==========
+onMounted(() => {
+  fetchList()
 })
 </script>
 ```
@@ -177,74 +181,81 @@ onMounted(() => {
 文件位置：src/api/{module}/xxx.ts
 
 结构：
-- 类型定义区域：定义 XxxVo（视图对象）、QueryXxxParams extends PageParams（查询
+- 类型定义区域：定义 XxxVo（视图对象）、QueryXxxParams extends PageParams（查询
 参数）、
-  CreateXxxParams（创建参数）、UpdateXxxParams（修改参数）
-- API 对象区域：export const xxxApi = { ... }，每个方法返回 Promise<T>
+  CreateXxxParams（创建参数）、UpdateXxxParams（修改参数）
+- API 对象区域：export const xxxApi = { ... }，每个方法返回 Promise<T>
 
 接口调用约定：
-- 所有接口自动解包 data 字段，业务层直接使用返回值
-- GET 列表返回 PaginationResult<XxxVo>（包含 list 和 total）
-- POST/PUT/DELETE 返回 void（成功即完成，失败由拦截器统一提示）
-- 文件上传使用 FormData + isUpload: true
-- 错误处理：try-catch 中 catch 为空（错误已由请求拦截器统一 ElMessage.error 提
+- 所有接口自动解包 data 字段，业务层直接使用返回值
+- GET 列表返回 PaginationResult<XxxVo>（包含 list 和 total）
+- POST/PUT/DELETE 返回 void（成功即完成，失败由拦截器统一提示）
+- 文件上传使用 FormData + isUpload: true
+- 错误处理：try-catch 中 catch 为空（错误已由请求拦截器统一 ElMessage.error 提
 示）
 
 类型导出：
-在 src/api/{module}/index.ts 中统一聚合导出 API 和类型
+在 src/api/{module}/index.ts 中统一聚合导出 API 和类型
 ```
 ### 六、TypeScript 类型规范
 ```
-文件位置：src/api/{module}/xxx.ts 中定义
+文件位置：src/api/{module}/xxx.ts 中定义
 
 通用类型（全局）：
-- PageParams：{ page: number; pageSize: number }
-- PaginationResult<T>：{ list: T[]; total: number }
+- PageParams：{ page: number; pageSize: number }
+- PaginationResult<T>：{ list: T[]; total: number }
 
 业务类型命名规范：
-- XxxVo：视图对象（后端返回给前端的数据结构，继承 id/createdAt/updatedAt）
-- QueryXxxParams extends PageParams：查询参数
-- CreateXxxParams：创建参数
-- UpdateXxxParams：修改参数
+- XxxVo：视图对象（后端返回给前端的数据结构，继承 id/createdAt/updatedAt）
+- QueryXxxParams extends PageParams：查询参数
+- CreateXxxParams：创建参数
+- UpdateXxxParams：修改参数
 
 类型要求：
-- 每个接口类型必须有 JSDoc 注释
-- 每个字段必须有 /** 注释说明 */
-- 可选字段使用 ? 标记
-- 枚举值字符串类型（如 status: '0' | '1'）
+- 每个接口类型必须有 JSDoc 注释
+- 每个字段必须有 /** 注释说明 */
+- 可选字段使用 ? 标记
+- 枚举值字符串类型（如 status: '0' | '1'）
 ```
 ### 七、路由配置规范
 ```
 文件位置：src/router/modules/{module}.ts
 
 结构：
-- 使用 DefaultLayout 作为父级布局组件
-- 父级 path: '/{module}'，设置 redirect 到第一个子路由
-- 子路由 path 使用相对路径（如 'user'）
-- 子路由 name 使用 PascalCase（如 'UserManage'）
-- 所有组件使用动态 import 懒加载
-- meta 必须包含 title 和 icon
-- 在 src/router/index.ts 中导入并注册路由模块
+- 使用 DefaultLayout 作为父级布局组件
+- 父级 path: '/{module}'，设置 redirect 到第一个子路由
+- 子路由 path 使用相对路径（如 'user'）
+- 子路由 name 使用 PascalCase（如 'UserManage'）
+- 所有组件使用动态 import 懒加载
+- meta 必须包含 title 和 icon
+- 在 src/router/index.ts 中导入并注册路由模块
 ```
 八、样式规范
 ```
-- 使用 <style lang="css" scoped>
-- 不使用 SCSS/Less（项目已有 sass-embedded 但页面样式保持 CSS）
-- 使用 Element Plus CSS 变量（var(--el-xxx)）确保主题一致性
-- .page-container: padding: 20px; display: flex; flex-direction: column; 
-gap: 16px
-- .search-card :deep(.el-card__body): padding-bottom: 2px（减少筛选卡片底部间
-距）
-- .table-card :deep(.el-card__body): padding: 0（表格紧贴卡片边框）
-- .table-action-bar: flex + align-items: center + justify-content: 
+- 使用 <style lang="css" scoped>
+- 不使用 SCSS/Less（项目已有 sass-embedded 但页面样式保持 CSS）
+- 使用 Element Plus CSS 变量（var(--el-xxx)）确保主题一致性
+- .page-container: padding: 20px; display: flex; flex-direction: column; 
+gap: 16px
+- 筛选区使用 .search-bar 扁平容器（全局样式已定义：无背景、无边框、无阴影，
+padding: 0 0 16px），不包裹 el-card；由于 .page-container 已有 gap 间距，
+页面内可声明 padding-bottom: 0 避免重复留白（与 /system/user 保持一致）
+- 表格不包裹 el-card，直接使用裸 el-table
+- 表格无边框：不传 border 属性，全局样式已移除竖向列分隔线（含固定列），
+仅保留行间分隔线
+- 表头淡灰色（背景 #f8f8f8、字色 #666、字重 600）由全局样式统一处理，
+页面无需重复定义
+- 分页区 .pagination-wrapper（全局已定义：flex + justify-content: flex-end 
++ padding: 16px 0），与表格分离，不共用卡片
+- .table-action-bar: flex + align-items: center + justify-content: 
 space-between
-- .pagination-wrapper: flex + justify-content: flex-end + padding: 16px
-- 状态选择器：class="xxx-select"，宽度控制为 180px
-- 文本占位符：class="text-placeholder"，color: var
+- 状态选择器：class="xxx-select"，宽度控制为 180px
+- 文本占位符：class="text-placeholder"，color: var
 (--el-text-color-placeholder)
-- 多个 tag 并排：使用 .xxx-tag + .xxx-tag { margin-left: 4px }
+- 多个 tag 并排：使用 .xxx-tag + .xxx-tag { margin-left: 4px }
 ```
 九、交互行为规范
+```
 搜索行为：
 - 点击"搜索"或回车 → page 重置为 1 → 调用 fetchList
 - 点击"重置" → 清空所有筛选字段为 undefined → page=1, pageSize=10 → 调用 fetchList
@@ -275,6 +286,7 @@ space-between
 - 必填字段 { required: true, message: '中文提示', trigger: 'blur' }
 - 长度限制 { min: x, max: y, message: '长度说明', trigger: 'blur' }
 - 提交前调用 formRef.validate().catch(() => false)
+```
 
 
 十、关键注意事项
@@ -288,4 +300,9 @@ space-between
 8. 组件无需手动导入（Element Plus 已配置自动导入）
 9. 删除/危险操作必须有二次确认（el-popconfirm 或 ElMessageBox.confirm）
 10. 表格操作列 fixed="right"，多选列 width="50"
-11. 所有文件路径遵循项目目录结构规范
+11. 筛选区/表格区不使用 el-card 包裹：筛选区用 .search-bar 扁平 div，
+    表格用裸 el-table
+12. 分页与表格分离：分页放 .pagination-wrapper 独立容器，不与表格共卡片
+13. 表格不传 border 属性（全局样式已移除竖向列分隔线、保留行间分隔线）；
+    表头淡灰色由全局样式统一处理，页面无需重复声明
+14. 所有文件路径遵循项目目录结构规范

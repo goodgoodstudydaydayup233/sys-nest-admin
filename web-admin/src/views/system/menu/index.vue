@@ -48,7 +48,6 @@
 
     <!-- 表格区 -->
     <el-table
-      ref="tableRef"
       v-if="refreshTable"
       v-loading="loading"
       :data="tableData"
@@ -402,9 +401,6 @@ const isExpandAll = ref(false)
 /** 表格显隐控制（展开/折叠时通过此变量强制重新渲染表格） */
 const refreshTable = ref(true)
 
-/** 表格实例引用 */
-const tableRef = ref()
-
 /** 查询参数（筛选条件，无分页） */
 const queryParams = reactive<QueryMenuParams>({
   menuName: undefined,
@@ -414,19 +410,13 @@ const queryParams = reactive<QueryMenuParams>({
 /**
  * 获取菜单列表
  * @description 调用 GET /menu/tree 接口获取树形结构数据。
- * 加载完成后默认展开一级节点（parentId=0），使二级菜单可见，三级及以上保持折叠。
+ * 默认完全折叠，仅展示一级菜单（顶层目录），展开/折叠按钮可切换全部层级。
  */
 async function fetchMenuList() {
   loading.value = true
   try {
     const tree = await menuApi.getMenuTree()
     tableData.value = tree
-    // 默认仅展开一级节点：下一帧逐个调用 toggleRowExpansion 展开每个顶层节点
-    nextTick(() => {
-      tree.forEach((node) => {
-        tableRef.value?.toggleRowExpansion?.(node, true)
-      })
-    })
   } catch {
     tableData.value = []
   } finally {

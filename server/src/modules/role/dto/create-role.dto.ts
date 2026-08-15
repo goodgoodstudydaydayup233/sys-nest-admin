@@ -7,6 +7,11 @@ export class CreateRoleDto {
   @IsNotEmpty({ message: '角色名称不能为空' })
   name: string;
 
+  @ApiProperty({ description: '角色编码' })
+  @IsString()
+  @IsNotEmpty({ message: '角色编码不能为空' })
+  code: string;
+
   @ApiPropertyOptional({ description: '权限标识' })
   @IsString()
   @IsOptional()

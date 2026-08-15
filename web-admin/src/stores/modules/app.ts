@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { RouteLocationNormalized } from 'vue-router'
 import { getThemeMode, setThemeMode, type ThemeMode } from '@/utils/theme'
+import { getLayoutMode, setLayoutMode, type LayoutMode } from '@/utils/layout'
 
 export const useAppStore = defineStore('app', () => {
   // 侧边栏是否折叠
@@ -24,6 +25,14 @@ export const useAppStore = defineStore('app', () => {
   /** 是否为浅色模式 */
   const isLight = computed(() => themeMode.value === 'light')
 
+  // ==================== 布局相关状态 ====================
+
+  /** 当前整体布局模式（sidebar/top/mix） */
+  const layoutMode = ref<LayoutMode>(getLayoutMode())
+
+  /** 系统设置抽屉是否可见 */
+  const settingsVisible = ref(false)
+
   // 切换侧边栏折叠状态
   function toggleSidebar() {
     sidebarCollapsed.value = !sidebarCollapsed.value
@@ -38,6 +47,27 @@ export const useAppStore = defineStore('app', () => {
   function setThemeModeAction(mode: ThemeMode) {
     setThemeMode(mode)
     themeMode.value = mode
+  }
+
+  // ==================== 布局相关方法 ====================
+
+  /**
+   * 设置整体布局模式
+   * @param mode 目标布局模式（'sidebar' | 'top' | 'mix'）
+   */
+  function setLayoutModeAction(mode: LayoutMode) {
+    setLayoutMode(mode)
+    layoutMode.value = mode
+  }
+
+  /** 打开系统设置抽屉 */
+  function openSettings() {
+    settingsVisible.value = true
+  }
+
+  /** 关闭系统设置抽屉 */
+  function closeSettings() {
+    settingsVisible.value = false
   }
 
   // ==================== TagsView / 缓存视图管理 ====================
@@ -168,11 +198,20 @@ export const useAppStore = defineStore('app', () => {
     isDark,
     isLight,
 
+    // 布局相关
+    layoutMode,
+    settingsVisible,
+
     // 侧边栏方法
     toggleSidebar,
 
     // 主题方法
     setThemeModeAction,
+
+    // 布局方法
+    setLayoutModeAction,
+    openSettings,
+    closeSettings,
 
     // TagsView 方法
     addView,

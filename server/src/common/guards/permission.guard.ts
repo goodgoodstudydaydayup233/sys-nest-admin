@@ -2,6 +2,7 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AppConfigService } from '../../core/config/config.service';
 import { AuthCacheService } from '../../modules/auth/auth-cache.service';
+import { AuthService } from '../../modules/auth/auth.service';
 import { BusinessException } from '../exceptions/business.exception';
 import { ErrorCodeEnum } from '../enums/error-code.enum';
 import { PERMISSION_KEY } from '../decorators/permission.decorator';
@@ -13,6 +14,7 @@ export class PermissionGuard implements CanActivate {
     private reflector: Reflector,
     private configService: AppConfigService,
     private authCacheService: AuthCacheService,
+    private authService: AuthService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -31,9 +33,11 @@ export class PermissionGuard implements CanActivate {
     }
 
     // 从Redis获取用户缓存信息
-    const cachedUser = await this.authCacheService.getUserCache(user.id);
+    let cachedUser = await this.authCacheService.getUserCache(user.id);
     if (!cachedUser) {
-      throw new BusinessException('Token已过期，请重新登录', ErrorCodeEnum.TOKEN_EXPIRED);
+      // 缓存缺失（角色/菜单权限变更时被整体清除）：从数据库重建并回写缓存，
+      // 保证权限即时生效且无需强制用户重新登录
+      cachedUser = await this.authService.getUserInfo(user.id);
     }
 
     // 将缓存的用户信息挂载到request

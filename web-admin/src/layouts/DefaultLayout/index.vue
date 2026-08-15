@@ -1,7 +1,11 @@
 <script lang="tsx">
 /**
  * DefaultLayout - 默认布局组件（TSX Render）
- * @description 后台管理系统主布局，采用经典后台布局：左侧固定侧边栏 + 右侧顶栏/标签页/内容区
+ * @description 后台管理系统主布局，根据整体布局模式（app-layout-mode）渲染三种形态：
+ *
+ * - sidebar（侧边栏布局，默认）：左侧固定侧边栏（完整菜单）+ 右侧顶栏/标签页/内容区
+ * - top（顶部导航布局）：无侧边栏，菜单横向展示在顶部导航栏，内容区更开阔
+ * - mix（混合布局）：一级菜单在顶部导航栏，二级菜单在左侧，两级联动
  *
  * 布局结构：
  * ┌─────────────────────────────────────────────┐
@@ -29,20 +33,33 @@ import Sidebar from './components/Sidebar/index.vue'
 import Navbar from './components/Navbar/index.vue'
 import TagsView from './components/TagsView/index.vue'
 import AppMain from './components/AppMain/index.vue'
+import SettingsDrawer from './components/SettingsDrawer/index.vue'
+import { useAppStore } from '@/stores/modules/app'
 
 export default defineComponent({
   name: 'DefaultLayout',
+  setup() {
+    const appStore = useAppStore()
+    return { appStore }
+  },
   render() {
+    const { layoutMode } = this.appStore
+    const isTop = layoutMode === 'top'
+    const isMix = layoutMode === 'mix'
+
     return (
       <div class="default-layout">
         <div class="layout-container">
-          <div class="sidebar-wrapper">
-            <Sidebar />
-          </div>
+          {/* sidebar / mix 布局渲染侧边栏（mix 时内部联动展示二级菜单） */}
+          {!isTop && (
+            <div class="sidebar-wrapper">
+              <Sidebar />
+            </div>
+          )}
 
           <div class="main-wrapper">
             <div class="navbar-wrapper">
-              <Navbar />
+              <Navbar variant={isTop ? 'top' : isMix ? 'mix' : 'normal'} />
             </div>
             <div class="tags-view-wrapper">
               <TagsView />
@@ -52,6 +69,9 @@ export default defineComponent({
             </div>
           </div>
         </div>
+
+        {/* 系统设置抽屉（右上角「系统设置」打开） */}
+        <SettingsDrawer />
       </div>
     )
   },

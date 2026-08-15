@@ -4,10 +4,14 @@ import { QueryMenuDto } from './dto/query-menu.dto';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import { MenuVo, MenuTreeVo } from './vo/menu.vo';
+import { AuthCacheService } from '../auth/auth-cache.service';
 
 @Injectable()
 export class MenuService {
-  constructor(private readonly menuRepository: MenuRepository) {}
+  constructor(
+    private readonly menuRepository: MenuRepository,
+    private readonly authCacheService: AuthCacheService,
+  ) {}
 
   async findById(id: number): Promise<MenuVo | null> {
     const menu = await this.menuRepository.findById(id);
@@ -40,6 +44,8 @@ export class MenuService {
       ...createMenuDto,
       createdBy: username,
     });
+    // 新增菜单可能携带权限标识（perms），清除用户缓存使权限即时生效
+    await this.authCacheService.clearAllUserCache();
     return this.toMenuVo(menu);
   }
 
@@ -48,11 +54,15 @@ export class MenuService {
       ...updateMenuDto,
       updatedBy: username,
     });
+    // 菜单权限标识可能变更，清除用户缓存使权限即时生效
+    await this.authCacheService.clearAllUserCache();
     return menu ? this.toMenuVo(menu) : null;
   }
 
   async remove(id: number): Promise<void> {
-    return this.menuRepository.remove(id);
+    await this.menuRepository.remove(id);
+    // 菜单被删除，相关用户的权限需立即刷新
+    await this.authCacheService.clearAllUserCache();
   }
 
   private buildTree(menus: any[], parentId: number = 0): MenuTreeVo[] {

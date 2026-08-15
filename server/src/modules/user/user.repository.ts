@@ -28,6 +28,17 @@ export class UserRepository {
     });
   }
 
+  /**
+   * 按 ID 加载用户及其角色、角色菜单
+   * @description 用于用户信息缓存缺失时从数据库重建权限（避免强制用户重新登录）
+   */
+  async findByIdWithRolesMenus(id: number): Promise<User | null> {
+    return this.userRepository.findOne({
+      where: { id, deleteStatus: '0' },
+      relations: ['roles', 'roles.menus'],
+    });
+  }
+
   async findAll(query: QueryUserDto): Promise<{ list: User[]; total: number }> {
     const { page = 1, pageSize = 10, username, nickname, phone, status } = query;
 

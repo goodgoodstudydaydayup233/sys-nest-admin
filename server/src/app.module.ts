@@ -17,7 +17,10 @@ import { CacheModule } from './modules/cache/cache.module';
 import { OnlineModule } from './modules/online/online.module';
 import { ServerModule } from './modules/server/server.module';
 import { NoticeModule } from './modules/notice/notice.module';
+import { MessageModule } from './modules/message/message.module';
 import { FileModule } from './common/services/file.module';
+import { FileLoggerModule } from './common/logger/file-log.module';
+import { FileLogModule } from './modules/file-log/file-log.module';
 
 @Module({
   imports: [
@@ -26,6 +29,8 @@ import { FileModule } from './common/services/file.module';
     AppConfigRedisModule,
     RateLimiterModule,
     FileModule,
+    FileLoggerModule,
+    FileLogModule,
     LogModule,
     AuthModule,
     AuthCacheModule,
@@ -40,6 +45,7 @@ import { FileModule } from './common/services/file.module';
     OnlineModule,
     ServerModule,
     NoticeModule,
+    MessageModule,
   ],
   controllers: [],
   providers: [],

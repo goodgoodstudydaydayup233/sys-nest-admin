@@ -172,10 +172,26 @@ export class AuthService {
 
   async getUserInfo(userId: number) {
     const userInfo = await this.authCacheService.getUserCache(userId);
-    if (!userInfo) {
-      throw new BusinessException('用户信息已过期，请重新登录', ErrorCodeEnum.TOKEN_EXPIRED);
+    if (userInfo) {
+      return userInfo;
     }
-    return userInfo;
+
+    // 缓存缺失（被清除 / 权限变更后失效）：从数据库重建，保证权限即时生效且无需强制重新登录
+    const user = await this.userService.findByIdWithRolesMenus(userId);
+    if (!user || user.status === '0') {
+      throw new BusinessException('用户不存在或已被禁用', ErrorCodeEnum.USER_DISABLED);
+    }
+
+    const rebuilt = {
+      id: user.id,
+      username: user.username,
+      nickname: user.nickname,
+      avatar: user.avatar,
+      roles: user.roles?.map((role) => ({ id: role.id, name: role.name })) || [],
+      permissions: this.extractPermissions(user),
+    };
+    await this.authCacheService.setUserCache(user.id, rebuilt);
+    return rebuilt;
   }
 
   async refresh(refreshToken: string) {

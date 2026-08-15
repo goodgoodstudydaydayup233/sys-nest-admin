@@ -6,6 +6,7 @@
 
     <div class="login-card">
       <div class="login-header">
+        <img class="login-logo" src="/logo.jpg" alt="logo" />
         <h1 class="login-title">{{ appTitle }}</h1>
         <p class="login-subtitle">后台管理系统</p>
       </div>
@@ -233,6 +234,13 @@ async function handleLogin() {
 .login-header {
   text-align: center;
   margin-bottom: 30px;
+
+  .login-logo {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    margin-bottom: 12px;
+  }
 }
 
 .login-title {

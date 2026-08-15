@@ -118,6 +118,18 @@ export type {
   UpdateNoticeParams,
 } from './notice'
 
+// ==================== 站内信模块 ====================
+
+export { messageApi } from './message'
+export type {
+  MessageVo,
+  MessageType,
+  MessageStatus,
+  SendMessageParams,
+  QueryMessageParams,
+  UnreadCountResult,
+} from './message'
+
 // ==================== 字典管理模块 ====================
 
 export { dictTypeApi, dictDataApi, fieldGroupApi } from './dict'

@@ -13,8 +13,11 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { PermissionGuard } from './common/guards/permission.guard';
 import { LogService } from './modules/log/log.service';
+import { AuthService } from './modules/auth/auth.service';
 import { AuthCacheService } from './modules/auth/auth-cache.service';
 import { RateLimiterService } from './common/services/rate-limiter.service';
+import { FileLoggerService } from './common/logger/file-logger.service';
+import { createAccessLogMiddleware } from './common/middleware/access-log.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -24,10 +27,30 @@ async function bootstrap() {
   const reflector = app.get(Reflector);
   const logService = app.get(LogService);
   const authCacheService = app.get(AuthCacheService);
+  const authService = app.get(AuthService);
   const rateLimiterService = app.get(RateLimiterService);
+  const fileLogger = app.get(FileLoggerService);
+
+  // 文件日志：接管 Nest 框架日志（启动过程、模块初始化、警告与异常都会写入 app 分类）
+  app.useLogger(fileLogger);
+
+  // 全局访问日志中间件（注册在所有守卫之前，401/403/404 等请求也会被完整记录）
+  app.use(createAccessLogMiddleware(fileLogger));
+
+  // 进程级异常兜底：未捕获异常/未处理 Promise 拒绝写入 error 分类，避免日志丢失
+  process.on('uncaughtException', (err) => {
+    fileLogger.error('uncaughtException', err.stack, 'Process');
+  });
+  process.on('unhandledRejection', (reason) => {
+    fileLogger.error(
+      'unhandledRejection',
+      reason instanceof Error ? reason.stack : String(reason),
+      'Process',
+    );
+  });
 
   // 全局过滤器
-  app.useGlobalFilters(new HttpExceptionFilter(), new BusinessExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter(fileLogger), new BusinessExceptionFilter());
 
   // 全局拦截器（执行顺序：从上到下，限流需在最前面）
   app.useGlobalInterceptors(
@@ -47,7 +70,10 @@ async function bootstrap() {
   JwtAuthGuard.setConfigService(configService);
 
   // 全局守卫
-  app.useGlobalGuards(new JwtAuthGuard(), new PermissionGuard(reflector, configService, authCacheService));
+  app.useGlobalGuards(
+    new JwtAuthGuard(),
+    new PermissionGuard(reflector, configService, authCacheService, authService),
+  );
 
   // 全局验证管道
   app.useGlobalPipes(

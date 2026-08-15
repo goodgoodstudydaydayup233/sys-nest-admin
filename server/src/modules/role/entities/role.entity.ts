@@ -9,6 +9,9 @@ export class Role extends BaseEntity {
   @Column({ length: 50, comment: '角色名称' })
   name: string;
 
+  @Column({ length: 50, default: '', comment: '角色编码' })
+  code: string;
+
   @Column({ length: 100, nullable: true, comment: '权限标识' })
   permission: string;
 

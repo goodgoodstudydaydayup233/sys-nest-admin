@@ -7,12 +7,14 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleVo, RoleListVo } from './vo/role.vo';
 import { BusinessException } from '../../common/exceptions/business.exception';
 import { ErrorCodeEnum } from '../../common/enums/error-code.enum';
+import { AuthCacheService } from '../auth/auth-cache.service';
 
 @Injectable()
 export class RoleService {
   constructor(
     private readonly roleRepository: RoleRepository,
     private readonly menuRepository: MenuRepository,
+    private readonly authCacheService: AuthCacheService,
   ) {}
 
   async findById(id: number): Promise<RoleVo | null> {
@@ -71,21 +73,27 @@ export class RoleService {
     }
 
     const role = await this.roleRepository.update(id, updateData);
+    // 角色菜单绑定可能变更，清除所有用户缓存使权限即时生效
+    await this.authCacheService.clearAllUserCache();
     return role ? this.toRoleVo(role) : null;
   }
 
   async remove(id: number): Promise<void> {
-    return this.roleRepository.remove(id);
+    await this.roleRepository.remove(id);
+    // 角色被删除，相关用户的权限需立即刷新
+    await this.authCacheService.clearAllUserCache();
   }
 
   async batchRemove(ids: number[]): Promise<void> {
-    return this.roleRepository.batchRemove(ids);
+    await this.roleRepository.batchRemove(ids);
+    await this.authCacheService.clearAllUserCache();
   }
 
   private toRoleVo(role: any): RoleVo {
     return {
       id: role.id,
       name: role.name,
+      code: role.code,
       permission: role.permission,
       status: role.status,
       sort: role.sort,

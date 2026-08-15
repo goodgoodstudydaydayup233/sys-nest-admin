@@ -298,7 +298,7 @@ INSERT INTO `sys_menu` VALUES (1007, 1003, '', '2026-05-03 16:53:12.680181', '20
 INSERT INTO `sys_menu` VALUES (1008, 1003, '', '2026-05-03 16:53:44.953146', '2026-05-03 16:53:44.953146', 'admin', NULL, '0', '0', '0', '批量删除', 0, '', '1', '0', 'F', 'system:user:delList', NULL, '');
 INSERT INTO `sys_menu` VALUES (1009, 1003, '', '2026-05-03 16:54:02.219030', '2026-05-03 16:54:02.219030', 'admin', NULL, '0', '0', '0', '单项删除', 0, '', '1', '0', 'F', 'system:user:delete', NULL, '');
 INSERT INTO `sys_menu` VALUES (1010, 1003, '', '2026-05-03 16:54:30.851435', '2026-05-03 16:54:30.851435', 'admin', NULL, '0', '0', '0', '编辑', 0, '', '1', '0', 'F', 'system:user:edit', NULL, '');
-INSERT INTO `sys_menu` VALUES (1011, 1003, '', '2026-05-03 16:55:03.654470', '2026-05-03 16:55:03.654470', 'admin', NULL, '0', '0', '0', '重置密码', 0, '', '1', '0', 'F', 'system:user:resetPasswords', NULL, '');
+INSERT INTO `sys_menu` VALUES (1011, 1003, '', '2026-05-03 16:55:03.654470', '2026-05-03 16:55:03.654470', 'admin', NULL, '0', '0', '0', '重置密码', 0, '', '1', '0', 'F', 'system:user:resetPassword', NULL, '');
 INSERT INTO `sys_menu` VALUES (1012, 1004, '', '2026-05-03 16:55:52.540812', '2026-05-03 16:55:52.540812', 'admin', NULL, '0', '0', '0', '新增', 0, '', '1', '0', 'F', 'system:role:add', NULL, '');
 INSERT INTO `sys_menu` VALUES (1013, 1004, '', '2026-05-03 16:56:04.442075', '2026-05-03 16:56:04.442075', 'admin', NULL, '0', '0', '0', '编辑', 0, '', '1', '0', 'F', 'system:role:edit', NULL, '');
 INSERT INTO `sys_menu` VALUES (1014, 1004, '', '2026-05-03 16:56:21.714263', '2026-05-03 16:56:21.714263', 'admin', NULL, '0', '0', '0', '删除', 0, '', '1', '0', 'F', 'system:role:delete', NULL, '');
@@ -307,6 +307,24 @@ INSERT INTO `sys_menu` VALUES (1016, 1005, '', '2026-05-03 16:57:31.932117', '20
 INSERT INTO `sys_menu` VALUES (1017, 1005, '', '2026-05-03 16:57:51.277480', '2026-05-03 16:57:51.277480', 'admin', NULL, '0', '0', '0', '删除', 0, '', '1', '0', 'F', 'system:menu:delete', NULL, '');
 INSERT INTO `sys_menu` VALUES (1018, 1005, '', '2026-05-03 16:58:08.051201', '2026-05-03 16:58:08.051201', 'admin', NULL, '0', '0', '0', '编辑', 0, '', '1', '0', 'F', 'system:menu:edit', NULL, '');
 INSERT INTO `sys_menu` VALUES (1020, 1002, 'dict', '2026-05-05 01:07:44.538268', '2026-05-05 01:07:44.538268', 'admin', NULL, '0', '0', '0', '字典管理', 0, '', '1', '0', 'C', 'system:dict:set', 'system/dict/index', 'Collection');
+INSERT INTO `sys_menu` VALUES (1039, 1020, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '字典类型查询', 0, '', '1', '0', 'F', 'system:dictType:list', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1040, 1020, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '字典类型详情', 0, '', '1', '0', 'F', 'system:dictType:query', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1041, 1020, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '字典类型新增', 0, '', '1', '0', 'F', 'system:dictType:add', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1042, 1020, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '字典类型修改', 0, '', '1', '0', 'F', 'system:dictType:edit', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1043, 1020, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '字典类型删除', 0, '', '1', '0', 'F', 'system:dictType:delete', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1044, 1020, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '字典数据查询', 0, '', '1', '0', 'F', 'system:dictData:list', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1045, 1020, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '字典数据详情', 0, '', '1', '0', 'F', 'system:dictData:query', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1046, 1020, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '字典数据新增', 0, '', '1', '0', 'F', 'system:dictData:add', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1047, 1020, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '字典数据修改', 0, '', '1', '0', 'F', 'system:dictData:edit', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1048, 1020, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '字典数据删除', 0, '', '1', '0', 'F', 'system:dictData:delete', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1049, 1020, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '字段分组查询', 0, '', '1', '0', 'F', 'system:fieldGroup:list', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1050, 1020, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '字段分组详情', 0, '', '1', '0', 'F', 'system:fieldGroup:query', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1051, 1020, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '字段分组新增', 0, '', '1', '0', 'F', 'system:fieldGroup:add', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1052, 1020, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '字段分组修改', 0, '', '1', '0', 'F', 'system:fieldGroup:edit', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1053, 1020, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '字段分组删除', 0, '', '1', '0', 'F', 'system:fieldGroup:delete', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1054, 1003, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '用户详情', 0, '', '1', '0', 'F', 'system:user:query', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1055, 1004, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '角色详情', 0, '', '1', '0', 'F', 'system:role:query', NULL, '#');
+INSERT INTO `sys_menu` VALUES (1056, 1005, NULL, '2026-08-15 12:00:00.000000', '2026-08-15 12:00:00.000000', 'admin', NULL, '0', '0', '0', '菜单详情', 0, '', '1', '0', 'F', 'system:menu:query', NULL, '#');
 INSERT INTO `sys_menu` VALUES (1021, 1002, 'job', '2026-05-05 03:44:54.290164', '2026-08-01 13:22:59.000000', 'admin', NULL, '0', '1', '0', '定时任务', 0, '', '1', '0', 'C', '', 'monitor/job/index', 'AlarmClock');
 INSERT INTO `sys_menu` VALUES (1022, 1002, 'jobLog', '2026-05-05 03:46:46.068262', '2026-08-01 13:15:53.861715', 'admin', NULL, '0', '1', '0', '定时日志', 0, '', '1', '0', 'C', '', 'monitor/job/log', 'Memo');
 INSERT INTO `sys_menu` VALUES (1030, 1002, 'config', '2026-08-01 15:39:25.000000', '2026-08-01 15:39:25.000000', 'admin', NULL, '0', '0', '0', '参数设置', 0, '', '1', '0', 'C', 'system:config:list', 'system/config/index', 'Edit');
@@ -322,6 +340,11 @@ INSERT INTO `sys_menu` VALUES (10372, 1037, '', '2026-08-01 16:16:57.976000', '2
 INSERT INTO `sys_menu` VALUES (10373, 1037, '', '2026-08-01 16:16:57.976000', '2026-08-01 16:16:57.976000', 'admin', NULL, '0', '0', '0', '通知新增', 3, '', '1', '0', 'F', 'system:notice:add', NULL, '#');
 INSERT INTO `sys_menu` VALUES (10374, 1037, '', '2026-08-01 16:16:57.976000', '2026-08-01 16:16:57.976000', 'admin', NULL, '0', '0', '0', '通知修改', 4, '', '1', '0', 'F', 'system:notice:edit', NULL, '#');
 INSERT INTO `sys_menu` VALUES (10375, 1037, '', '2026-08-01 16:16:57.976000', '2026-08-01 16:16:57.976000', 'admin', NULL, '0', '0', '0', '通知删除', 5, '', '1', '0', 'F', 'system:notice:remove', NULL, '#');
+-- 文件日志菜单（系统监控 -> 文件日志）
+INSERT INTO `sys_menu` VALUES (77, 3, '/monitor/fileLog', '2026-08-15 00:00:00.000000', '2026-08-15 00:00:00.000000', 'admin', 'admin', '0', '0', '0', '文件日志', 7, '', '1', '0', 'C', 'monitor:fileLog:list', 'monitor/fileLog/index', 'Document');
+INSERT INTO `sys_menu` VALUES (771, 77, NULL, '2026-08-15 00:00:00.000000', '2026-08-15 00:00:00.000000', 'admin', NULL, '0', '0', '0', '文件日志查询', 1, '', '1', '0', 'F', 'monitor:fileLog:query', NULL, '#');
+INSERT INTO `sys_menu` VALUES (772, 77, NULL, '2026-08-15 00:00:00.000000', '2026-08-15 00:00:00.000000', 'admin', NULL, '0', '0', '0', '文件日志下载', 2, '', '1', '0', 'F', 'monitor:fileLog:download', NULL, '#');
+INSERT INTO `sys_menu` VALUES (773, 77, NULL, '2026-08-15 00:00:00.000000', '2026-08-15 00:00:00.000000', 'admin', NULL, '0', '0', '0', '文件日志删除', 3, '', '1', '0', 'F', 'monitor:fileLog:remove', NULL, '#');
 
 -- ----------------------------
 -- Table structure for sys_notice
@@ -2163,6 +2186,7 @@ DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role`  (
   `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色名称',
+  `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '角色编码',
   `sort` int NOT NULL DEFAULT 0 COMMENT '排序',
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
   `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
@@ -2180,8 +2204,8 @@ CREATE TABLE `sys_role`  (
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
-INSERT INTO `sys_role` VALUES (1, '超级管理员', 1, '拥有所有权限，跳过权限校验', '2026-05-01 14:16:32.000000', '2026-05-02 22:44:07.149851', NULL, NULL, '0', '1', '1', '*:*:*');
-INSERT INTO `sys_role` VALUES (2, '测试', 0, '2121', '2026-05-02 21:37:54.005449', '2026-05-03 16:52:23.000000', 'admin', 'admin', '0', '0', '1', 'user:code');
+INSERT INTO `sys_role` VALUES (1, '超级管理员', 'admin', 1, '拥有所有权限，跳过权限校验', '2026-05-01 14:16:32.000000', '2026-05-02 22:44:07.149851', NULL, NULL, '0', '1', '1', '*:*:*');
+INSERT INTO `sys_role` VALUES (2, '测试', 'test', 0, '2121', '2026-05-02 21:37:54.005449', '2026-05-03 16:52:23.000000', 'admin', 'admin', '0', '0', '1', 'user:code');
 
 -- ----------------------------
 -- Table structure for sys_role_menu
@@ -2229,12 +2253,34 @@ INSERT INTO `sys_role_menu` VALUES (1, 732);
 INSERT INTO `sys_role_menu` VALUES (1, 751);
 INSERT INTO `sys_role_menu` VALUES (1, 752);
 INSERT INTO `sys_role_menu` VALUES (1, 761);
+INSERT INTO `sys_role_menu` VALUES (1, 77);
+INSERT INTO `sys_role_menu` VALUES (1, 771);
+INSERT INTO `sys_role_menu` VALUES (1, 772);
+INSERT INTO `sys_role_menu` VALUES (1, 773);
 INSERT INTO `sys_role_menu` VALUES (1, 1037);
 INSERT INTO `sys_role_menu` VALUES (1, 10371);
 INSERT INTO `sys_role_menu` VALUES (1, 10372);
 INSERT INTO `sys_role_menu` VALUES (1, 10373);
 INSERT INTO `sys_role_menu` VALUES (1, 10374);
 INSERT INTO `sys_role_menu` VALUES (1, 10375);
+INSERT INTO `sys_role_menu` VALUES (1, 1039);
+INSERT INTO `sys_role_menu` VALUES (1, 1040);
+INSERT INTO `sys_role_menu` VALUES (1, 1041);
+INSERT INTO `sys_role_menu` VALUES (1, 1042);
+INSERT INTO `sys_role_menu` VALUES (1, 1043);
+INSERT INTO `sys_role_menu` VALUES (1, 1044);
+INSERT INTO `sys_role_menu` VALUES (1, 1045);
+INSERT INTO `sys_role_menu` VALUES (1, 1046);
+INSERT INTO `sys_role_menu` VALUES (1, 1047);
+INSERT INTO `sys_role_menu` VALUES (1, 1048);
+INSERT INTO `sys_role_menu` VALUES (1, 1049);
+INSERT INTO `sys_role_menu` VALUES (1, 1050);
+INSERT INTO `sys_role_menu` VALUES (1, 1051);
+INSERT INTO `sys_role_menu` VALUES (1, 1052);
+INSERT INTO `sys_role_menu` VALUES (1, 1053);
+INSERT INTO `sys_role_menu` VALUES (1, 1054);
+INSERT INTO `sys_role_menu` VALUES (1, 1055);
+INSERT INTO `sys_role_menu` VALUES (1, 1056);
 INSERT INTO `sys_role_menu` VALUES (2, 1002);
 INSERT INTO `sys_role_menu` VALUES (2, 1003);
 INSERT INTO `sys_role_menu` VALUES (2, 1004);
@@ -2246,6 +2292,24 @@ INSERT INTO `sys_role_menu` VALUES (2, 1033);
 INSERT INTO `sys_role_menu` VALUES (2, 1034);
 INSERT INTO `sys_role_menu` VALUES (2, 1035);
 INSERT INTO `sys_role_menu` VALUES (2, 1036);
+INSERT INTO `sys_role_menu` VALUES (2, 1039);
+INSERT INTO `sys_role_menu` VALUES (2, 1040);
+INSERT INTO `sys_role_menu` VALUES (2, 1041);
+INSERT INTO `sys_role_menu` VALUES (2, 1042);
+INSERT INTO `sys_role_menu` VALUES (2, 1043);
+INSERT INTO `sys_role_menu` VALUES (2, 1044);
+INSERT INTO `sys_role_menu` VALUES (2, 1045);
+INSERT INTO `sys_role_menu` VALUES (2, 1046);
+INSERT INTO `sys_role_menu` VALUES (2, 1047);
+INSERT INTO `sys_role_menu` VALUES (2, 1048);
+INSERT INTO `sys_role_menu` VALUES (2, 1049);
+INSERT INTO `sys_role_menu` VALUES (2, 1050);
+INSERT INTO `sys_role_menu` VALUES (2, 1051);
+INSERT INTO `sys_role_menu` VALUES (2, 1052);
+INSERT INTO `sys_role_menu` VALUES (2, 1053);
+INSERT INTO `sys_role_menu` VALUES (2, 1054);
+INSERT INTO `sys_role_menu` VALUES (2, 1055);
+INSERT INTO `sys_role_menu` VALUES (2, 1056);
 
 -- ----------------------------
 -- Table structure for sys_user

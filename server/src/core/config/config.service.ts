@@ -25,6 +25,25 @@ export class AppConfigService {
     };
   }
 
+  /**
+   * 文件日志配置
+   * @description 企业级文件日志能力参数：
+   * - enabled：总开关，关闭后仅输出到控制台
+   * - dir：日志根目录，自动按分类（access/app/error）创建子目录
+   * - maxFileSize：单份日志文件大小上限（MB），超出后滚动生成新文件
+   * - maxTotalSize：日志总大小上限（MB），超出后自动清理最旧文件
+   * - accessEnabled：是否记录所有 HTTP 请求的访问日志
+   */
+  get fileLog() {
+    return {
+      enabled: this.configService.get<boolean>('fileLog.enabled', true),
+      dir: this.configService.get<string>('fileLog.dir', './logs'),
+      maxFileSize: this.configService.get<number>('fileLog.maxFileSize', 10),
+      maxTotalSize: this.configService.get<number>('fileLog.maxTotalSize', 512),
+      accessEnabled: this.configService.get<boolean>('fileLog.accessEnabled', true),
+    };
+  }
+
   get database() {
     return {
       type: this.configService.get<string>('database.type', 'mysql') as 'mysql',

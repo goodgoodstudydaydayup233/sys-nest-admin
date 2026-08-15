@@ -30,7 +30,8 @@ export class DictDataController {
   @Get('type/:dictType')
   @ApiOperation({ summary: '根据字典类型获取字典数据' })
   @ApiResponse({ status: 200, description: '成功', type: [DictDataVo] })
-  @Permission('system:dictData:list')
+  // 通用字典查询接口：供业务页面（如用户管理的性别下拉）通过 useDict 使用，
+  // 仅需登录即可访问，不归属于「字典管理」权限，故不声明 @Permission
   async findByDictType(@Param('dictType') dictType: string): Promise<DictDataVo[]> {
     return this.dictDataService.findByDictType(dictType);
   }

@@ -215,20 +215,20 @@ function handleNotifyMe() {
     }
   }
 
-  @keyframes shimmer {
-    0% {
-      transform: translateX(-100%);
-    }
-    100% {
-      transform: translateX(100%);
-    }
-  }
-
   .progress-text {
     margin: 12px 0 0 0;
     font-size: 14px;
     color: #67c23a;
     font-weight: 600;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
   }
 }
 

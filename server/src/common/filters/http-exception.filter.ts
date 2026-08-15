@@ -1,10 +1,12 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { Response } from 'express';
+import { FileLoggerService } from '../logger/file-logger.service';
 
 /**
  * HTTP 异常过滤器
  *
  * 功能：捕获 NestJS 内置的 HttpException（如 401、403、404、500 等）
+ * 服务端错误（status >= 500）会同步写入文件日志 error 分类，便于审计排障。
  *
  * 响应格式：
  * {
@@ -15,7 +17,7 @@ import { Response } from 'express';
  *
  * 使用方式：
  * 在 main.ts 中注册为全局过滤器：
- * app.useGlobalFilters(new HttpExceptionFilter());
+ * app.useGlobalFilters(new HttpExceptionFilter(fileLogger));
  *
  * 常见触发场景：
  * 1. JwtAuthGuard 认证失败 → 401
@@ -29,17 +31,27 @@ import { Response } from 'express';
  */
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
+  constructor(private readonly fileLogger?: FileLoggerService) {}
+
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
     const exceptionResponse = exception.getResponse();
 
+    const message =
+      typeof exceptionResponse === 'string'
+        ? exceptionResponse
+        : ((exceptionResponse as Record<string, unknown>)?.message as string) || 'error';
+
+    // 服务端错误写入文件日志 error 分类
+    if (status >= 500 && this.fileLogger) {
+      this.fileLogger.error(message, exception.stack, `HttpException:${status}`);
+    }
+
     response.status(status).json({
       code: status,
-      msg: typeof exceptionResponse === 'string'
-        ? exceptionResponse
-        : (exceptionResponse as any).message || 'error',
+      msg: message,
       data: null,
     });
   }

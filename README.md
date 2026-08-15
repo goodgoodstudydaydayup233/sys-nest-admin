@@ -1,6 +1,9 @@
 # sys-nest-admin
 
-一个基于 **NestJS + Vue 3** 的通用后台管理系统，采用前后端分离架构，内置用户、角色、菜单、字典、定时任务、日志、配置、通知、在线用户、服务监控等常用后台能力。
+一个基于 **NestJS + Vue 3** 的通用后台管理系统，采用前后端分离架构，内置用户、角色、菜单、字典、参数配置、通知公告、站内信、定时任务、操作/登录日志、在线用户、缓存监控、服务监控、文件日志等常用后台能力。
+
+- 当前版本：**v1.0.2**
+- 技术体系：NestJS 11 + TypeORM + MySQL + Redis + Vue 3.5 + Vite 8 + Element Plus + Pinia + TypeScript
 
 ## 项目演示
 
@@ -12,6 +15,7 @@
 
 - [项目演示](#项目演示)
   - [首页](#首页)
+- [功能特性](#功能特性)
 - [技术栈](#技术栈)
   - [后端（server）](#后端server)
   - [前端（web-admin）](#前端web-admin)
@@ -24,8 +28,10 @@
   - [权限标识](#权限标识)
   - [错误码](#错误码)
   - [配置说明](#配置说明)
+  - [认证与会话](#认证与会话)
 - [前端规范](#前端规范)
   - [代码风格](#代码风格)
+  - [目录职责](#目录职责)
   - [API 接口层](#api-接口层)
   - [标准页面布局](#标准页面布局)
   - [路由](#路由)
@@ -39,7 +45,19 @@
   - [前端打包](#前端打包)
   - [4. 同时运行](#4-同时运行)
 - [默认账号](#默认账号)
+- [更新日志](#更新日志)
 - [相关文档](#相关文档)
+
+---
+
+## 功能特性
+
+- **认证与安全**：JWT 双 Token（access / refresh）无感刷新、token 黑名单、登录验证码、登录失败重试锁定、三层限流（全局限流 / IP 限流 / 接口限流）
+- **权限体系**：基于 RBAC 的角色-菜单-按钮权限，`@Permission` 装饰器 + `v-permissions` 指令双重控制；角色/菜单变更后权限**即时生效**（Redis 用户缓存自动失效并从数据库重建，无需重新登录）
+- **账号强退**：禁用 / 删除用户时，其所有在线会话 token 被拉黑，下次请求自动跳转登录页
+- **站内信**：定向 / 全员发送、未读数、已读 / 删除，基于 **SSE（Server-Sent Events）** 后端主动实时推送，无需轮询
+- **系统监控**：在线用户、缓存监控、服务监控、操作日志、登录日志、文件日志
+- **其他**：定时任务（cron）、参数配置、字典分组 / 类型 / 数据、通知公告、深色主题、动态菜单与路由
 
 ---
 
@@ -61,6 +79,7 @@
 | 验证码 | svg-captcha |
 | 定时任务 | @nestjs/schedule + cron |
 | 服务监控 | systeminformation |
+| 实时推送 | SSE（Server-Sent Events，EventSource） |
 | 包管理 | pnpm |
 
 ### 前端（web-admin）
@@ -74,7 +93,7 @@
 | 图标 | @element-plus/icons-vue |
 | 状态管理 | Pinia |
 | 路由 | Vue Router 5 |
-| HTTP | Axios |
+| HTTP | Axios（无感 Token 刷新、防重复请求） |
 | 图表 | ECharts 6 |
 | 包管理 | pnpm |
 
@@ -85,7 +104,10 @@
 ```
 nest-admin/
 ├── server/                # 后端服务（NestJS）
-└── web-admin/             # 前端应用（Vue 3 + Vite）
+├── web-admin/             # 前端应用（Vue 3 + Vite）
+├── 演示/                  # 项目演示截图
+├── README.md              # 项目文档（本文档）
+└── LICENSE
 ```
 
 ### 后端目录结构
@@ -93,46 +115,51 @@ nest-admin/
 ```
 server/
 ├── config/                       # 环境配置
-│   ├── development.yml           # 开发环境配置
-│   └── production.yml            # 生产环境配置
+│   ├── development.yml           # 开发环境配置（前缀 dev-api、synchronize: true）
+│   └── production.yml            # 生产环境配置（前缀 prod-api、synchronize: false）
 ├── sql/
-│   └── init.sql                  # 数据库初始化脚本（含表结构与初始数据）
-├── Prompt/                       # 开发规范文档
+│   ├── init.sql                  # 数据库初始化脚本（表结构 + 初始数据）
+│   └── message.sql               # 站内信相关表结构
 ├── src/
 │   ├── common/                   # 公共模块
-│   │   ├── decorators/           # 自定义装饰器（@Permission / @Log / @Roles / @User）
-│   │   ├── dto/                  # 公共 DTO（BasePaginationDto / ResponseDto 等）
+│   │   ├── decorators/           # 自定义装饰器（@Permission / @Log / @Roles / @User / @RateLimiter）
+│   │   ├── dto/                  # 公共 DTO（BasePaginationDto / ResponseDto / UserInfoDto 等）
 │   │   ├── entities/             # 公共实体基类 BaseEntity
-│   │   ├── enums/                # 枚举（错误码、状态、业务类型、配置键等）
+│   │   ├── enums/                # 枚举（错误码、状态、业务类型、配置键、上传路径、限流类型）
 │   │   ├── exceptions/           # 自定义业务异常 BusinessException
 │   │   ├── filters/              # 异常过滤器（HTTP / 业务异常）
-│   │   ├── guards/               # 守卫（JWT 鉴权 / 权限 / 角色）
-│   │   ├── interceptors/         # 拦截器（日志 / 统一响应转换）
-│   │   ├── interfaces/           # 公共接口
-│   │   ├── services/             # 公共服务（文件上传 FileService）
+│   │   ├── guards/               # 守卫（JwtAuthGuard / PermissionGuard / RolesGuard）
+│   │   ├── interceptors/         # 拦截器（访问日志 / 限流 / 统一响应转换）
+│   │   ├── interfaces/           # 公共接口（Repository 通用接口）
+│   │   ├── logger/               # 文件日志（FileLoggerService + 日志模块）
+│   │   ├── middleware/           # 访问日志中间件
+│   │   ├── services/             # 公共服务（文件上传 FileService / 限流 RateLimiterService）
 │   │   ├── utils/                # 工具函数（菜单构建、UA 解析等）
 │   │   └── vo/                   # 公共 VO 基类 BaseVo
 │   ├── core/                     # 核心模块
-│   │   ├── config/               # 配置管理 ConfigService
+│   │   ├── config/               # 配置管理 AppConfigService（yml 配置加载）
 │   │   ├── database/             # 数据库连接
-│   │   └── redis/                # Redis 缓存服务
+│   │   └── redis/                # Redis 缓存服务（用户缓存 / token 黑名单 / 字典缓存等）
 │   ├── modules/                  # 业务模块
-│   │   ├── auth/                 # 认证（登录、刷新 Token、登出）
+│   │   ├── auth/                 # 认证（登录 / 刷新 Token / 登出 / 用户信息，含 Redis 权限缓存）
 │   │   ├── captcha/              # 验证码
-│   │   ├── user/                 # 用户管理
-│   │   ├── role/                 # 角色管理
-│   │   ├── menu/                 # 菜单管理
-│   │   ├── dict/                 # 字典类型 / 字典数据 / 字段分组
+│   │   ├── user/                 # 用户管理（禁用/删除时强退在线会话）
+│   │   ├── role/                 # 角色管理（变更后清除权限缓存）
+│   │   ├── menu/                 # 菜单管理（变更后清除权限缓存）
+│   │   ├── dict/                 # 字典（字段分组 / 字典类型 / 字典数据，Redis 缓存）
 │   │   ├── config/               # 参数配置
 │   │   ├── notice/               # 通知公告
+│   │   ├── message/              # 站内信（含 SSE 实时推送 MessageSseService）
 │   │   ├── job/                  # 定时任务 + 任务日志
 │   │   ├── log/                  # 操作日志 + 登录日志
+│   │   ├── file-log/             # 文件日志
 │   │   ├── cache/                # 缓存监控
-│   │   ├── online/               # 在线用户
+│   │   ├── online/               # 在线用户（强退）
 │   │   └── server/               # 服务监控
-│   ├── types/                    # 类型声明补充
+│   ├── types/                    # 类型声明补充（express.d.ts 扩展 req.user / req.userInfo）
 │   ├── app.module.ts             # 根模块
-│   └── main.ts                   # 应用入口
+│   └── main.ts                   # 应用入口（全局守卫 / 拦截器 / Swagger）
+├── test/                         # e2e 测试
 └── package.json
 ```
 
@@ -140,7 +167,7 @@ server/
 
 ```
 modules/{module}/
-├── dto/                # 数据传输对象（Create / Update / Query / BatchDelete）
+├── dto/                # 数据传输对象（Create / Update / Query / BatchDelete / Form）
 ├── entities/           # TypeORM 实体
 ├── vo/                 # 视图对象（响应数据结构）
 ├── repository/         # 数据访问层（部分模块）
@@ -153,45 +180,48 @@ modules/{module}/
 
 ```
 web-admin/
-├── public/                       # 静态资源
+├── public/                       # 静态资源（favicon / logo）
 ├── src/
-│   ├── api/                      # 接口请求层
-│   │   ├── system/               # 系统管理接口（user/role/menu/dict...）
-│   │   └── monitor/              # 监控接口（cache/online/server）
+│   ├── api/                      # 接口请求层（按业务模块划分，index.ts 统一聚合导出）
+│   │   ├── system/               # 系统管理接口（auth/config/dict/job/loginLog/menu/message/
+│   │   │                         #   notice/operLog/role/user）
+│   │   └── monitor/              # 监控接口（cache/fileLog/online/server）
 │   ├── assets/                   # 样式与静态资源
-│   │   └── styles/               # 全局样式 + 主题变量
+│   │   └── styles/               # 全局样式 + 深浅主题变量（index.css / variables-*.css）
 │   ├── components/               # 全局公共组件（DictTag / ThemeSwitch）
-│   ├── config/                   # 应用配置
-│   ├── constants/                # 常量
-│   ├── directives/               # 自定义指令（权限指令 v-permission）
-│   ├── hooks/                    # 组合式函数（useDict / useMenu / useTheme）
+│   ├── config/                   # 应用配置（config/index.ts，暴露 apiBaseUrl / superAdmin 等）
+│   ├── constants/                # 常量（index.ts）
+│   ├── directives/               # 自定义指令（permission.ts，v-permissions 权限指令）
+│   ├── hooks/                    # 组合式函数（useDict 字典 / useMenu 菜单 / useTheme 主题）
 │   ├── layouts/                  # 布局
-│   │   ├── DefaultLayout/        # 默认布局（含 Sidebar/Navbar/TagsView/Breadcrumb）
+│   │   ├── DefaultLayout/        # 默认布局（Sidebar/Navbar/TagsView/Breadcrumb/AppMain/
+│   │   │                         #   SettingsDrawer/TopMenu）
 │   │   ├── BlankLayout/          # 空白布局
 │   │   ├── InnerLink/            # 内链布局
 │   │   └── ParentView/           # 父级容器
+│   ├── locale/                   # 国际化（预留）
 │   ├── router/                   # 路由
 │   │   ├── modules/              # 路由模块（dashboard/system/monitor/error）
-│   │   ├── guards.ts             # 路由守卫
+│   │   ├── guards.ts             # 路由守卫（登录校验 / 动态路由生成）
 │   │   └── whiteList.ts          # 白名单
-│   ├── stores/                   # Pinia 状态
-│   │   └── modules/              # app / user / permission
+│   ├── stores/                   # Pinia 状态（modules: app / user / permission / message）
 │   ├── types/                    # 全局类型
 │   ├── utils/                    # 工具
-│   │   ├── request/              # Axios 封装（service / errorCode）
-│   │   ├── auth.ts               # Token 管理
+│   │   ├── request/              # Axios 封装（service 拦截器 / errorCode 错误码 / index 导出）
+│   │   ├── auth.ts               # Token 管理（存取 / 清空）
 │   │   ├── theme.ts              # 主题
-│   │   └── ...                   # 其他工具
+│   │   └── ...                   # 其他工具（filter / iconMap / layout / remember 等）
 │   ├── views/                    # 页面视图
 │   │   ├── dashboard/            # 首页
 │   │   ├── login/                # 登录
-│   │   ├── system/               # 系统管理页面
-│   │   ├── monitor/              # 系统监控页面
-│   │   └── error/                # 错误页（403/404/500...）
+│   │   ├── system/               # 系统管理页面（user/role/menu/dict/config/notice/message）
+│   │   ├── monitor/              # 系统监控页面（job/cache/cacheList/logininfor/online/
+│   │   │                         #   operlog/server/fileLog）
+│   │   └── error/                # 错误页（403/404/500/Maintenance/NetworkError）
 │   ├── App.vue
 │   └── main.ts
-├── .env / .env.development / .env.production   # 环境变量
-├── vite.config.ts                # Vite 配置（含 /admin 代理）
+├── .env / .env.development / .env.production / .env.staging  # 环境变量
+├── vite.config.ts                # Vite 配置（含 /dev-api 代理）
 └── package.json
 ```
 
@@ -217,6 +247,8 @@ web-admin/
   ```
 
 - **Swagger 文档**：启动后访问 `http://localhost:3000/api`，JSON 可导入 Apifox：`http://localhost:3000/api-json`。
+  - Servers 展示完整地址（含环境前缀，如 `http://localhost:3000/dev-api`）
+  - 接口路径仅展示模块级路径（不带前缀）
 
 ### 命名与分层
 
@@ -231,12 +263,15 @@ web-admin/
 
 采用 `模块:资源:动作` 三段式，例如：
 
-- `system:user:list` / `system:user:add` / `system:user:edit` / `system:user:delete`
-- 超级管理员（配置项 `app.admin`）跳过权限校验。
+- `system:user:list` / `system:user:add` / `system:user:edit` / `system:user:delete` / `system:user:query` / `system:user:resetPassword`
+- `system:dictType:list` / `system:dictData:add` / `system:fieldGroup:delete` 等
+- `system:message:send`（站内信发送）、`monitor:online:forceLogout`（在线强退）
+
+超级管理员（配置项 `app.admin`）跳过权限校验。权限点以数据库 `sys_menu` 中 F 类型菜单为准，角色通过 `sys_role_menu` 绑定。
 
 ### 错误码
 
-按业务分段，详见 [`src/common/enums/error-code.enum.ts`](server/src/common/enums/error-code.enum.ts)：
+按业务分段，详见 [`server/src/common/enums/error-code.enum.ts`](server/src/common/enums/error-code.enum.ts)：
 
 - `200` 成功 / `4xx` HTTP 异常 / `5xx` 服务异常
 - `1xxx` 用户相关 / `2xxx` 验证码 / `3xxx` Token / `4xxx` 权限 / `5xxx` 参数 / `6xxx` 配置
@@ -245,7 +280,7 @@ web-admin/
 
 ### 配置说明
 
-开发环境配置 [`config/development.yml`](server/config/development.yml) 关键项：
+开发环境配置 [`server/config/development.yml`](server/config/development.yml) 关键项：
 
 | 配置项 | 默认值 | 说明 |
 | --- | --- | --- |
@@ -253,10 +288,20 @@ web-admin/
 | `app.apiPrefix` | dev-api（开发）/ prod-api（生产） | 全局接口前缀 |
 | `swagger.serverUrl` | `http://localhost:3000/dev-api` / `https://nest-admin.dooring.vip/prod-api` | Swagger Servers 展示地址，包含环境前缀 |
 | `database` | localhost:3306 / sys_nest_server | MySQL 连接，开发环境 `synchronize: true` |
-| `redis` | localhost:6379 db=2 | Redis 连接 |
+| `redis` | localhost:6379 | Redis 连接 |
+| `redisKeys.user.expiresIn` | 86400 | 用户权限缓存 TTL（24h） |
 | `jwt.accessTokenExpiresIn` | 2h | 访问 Token 有效期 |
 | `jwt.refreshTokenExpiresIn` | 7d | 刷新 Token 有效期 |
 | `app.admin` | admin | 超级管理员用户名 |
+| `rateLimit` | - | 三层限流：全局 60s/5000、单 IP 60s/1000、IP+接口 60s/100 |
+
+### 认证与会话
+
+- **双 Token**：access（2h）+ refresh（7d）；access 过期时前端自动用 refresh 无感刷新。
+- **Token 黑名单**：登出 / 强退时将 token 写入 Redis 黑名单（`token:blacklist:*`），下次请求立即失效。
+- **权限缓存**：登录时用户角色与权限写入 Redis（`user:info:{id}`，24h）；角色 / 菜单变更时自动清空全部用户缓存，且 PermissionGuard 缓存缺失时会从数据库自动重建（无需重新登录）。
+- **账号强退**：禁用（`status='0'`）或删除用户时，扫描其全部在线 token 加入黑名单并清除在线记录，对方下次请求即被 401 并跳转登录页。
+- **站内信 SSE**：`GET /system/message/sse?token=xxx`（token 走 query，因 EventSource 无法携带请求头，该端点已加入白名单并手动校验 JWT）；发送站内信后后端主动推送 `new-message` 事件，前端刷新未读数并弹系统通知。
 
 ---
 
@@ -270,6 +315,23 @@ web-admin/
 - 组件无需手动导入（Element Plus 已配置自动导入）；图标需从 `@element-plus/icons-vue` 手动 import。
 - 函数、变量、类型使用 JSDoc 注释（`@description` / `@param` / `@example`）。
 - 路径别名 `@` → `src`。
+
+### 目录职责
+
+| 目录 | 职责 |
+| --- | --- |
+| `src/api/` | 接口请求层：按业务模块拆分（system / monitor），`index.ts` 统一聚合导出 API 与类型 |
+| `src/components/` | 全局公共组件：`DictTag`（字典标签）、`ThemeSwitch`（主题切换） |
+| `src/directives/` | 自定义指令：`v-permissions` 权限指令（无权限时移除元素） |
+| `src/hooks/` | 组合式函数：`useDict`（字典数据，带内存缓存）、`useMenu`、`useTheme` |
+| `src/layouts/` | 布局：`DefaultLayout`（侧边栏 + 顶栏 + 标签页 + 面包屑 + 内容区）、`BlankLayout`、`InnerLink`、`ParentView` |
+| `src/router/` | 路由：`modules/` 按业务拆分布局路由，`guards.ts` 守卫，`whiteList.ts` 白名单 |
+| `src/stores/` | Pinia 状态：`user`（登录态 / 用户信息 / 权限）、`permission`（动态路由）、`message`（站内信未读 + SSE 连接）、`app`（应用 UI 状态） |
+| `src/utils/` | 工具：`request/`（Axios 封装）、`auth`（Token）、`theme`、`filter`、`layout`、`remember` 等 |
+| `src/views/` | 页面视图：`system/` 系统管理、`monitor/` 系统监控、`dashboard/`、`login/`、`error/` |
+| `src/config/` | 应用全局配置（`apiBaseUrl`、`superAdmin` 等） |
+| `src/constants/` | 全局常量 |
+| `src/types/` | 全局 TypeScript 类型 |
 
 ### API 接口层
 
@@ -293,6 +355,7 @@ web-admin/
 
 - 位置：`src/router/modules/{module}.ts`，使用 `DefaultLayout` 作为父级。
 - 子路由 `path` 相对、`name` PascalCase，组件动态 `import` 懒加载，`meta` 必含 `title` 和 `icon`。
+- 动态菜单：登录后根据后端菜单数据动态生成路由（`permission` store）。
 
 ### 交互约定
 
@@ -300,6 +363,8 @@ web-admin/
 - 新增：`dialogType='create'` → 重置表单 → 打开弹窗 → `nextTick` 清除校验。
 - 编辑：先请求详情回填 → `dialogType='edit'` → 打开弹窗。
 - 删除：单条 `el-popconfirm`，批量 `ElMessageBox.confirm`，成功后刷新列表并清空选中。
+- Token 失效：401 时自动无感刷新；刷新失败则清除登录态并跳转登录页（`utils/request/service.ts`）。
+- 站内信：顶部铃铛实时未读数由 SSE 驱动（`stores/modules/message.ts`），token 变化时自动断开 / 重建连接。
 
 ### 环境变量
 
@@ -308,6 +373,7 @@ web-admin/
 | `.env` | 公共配置 | `VITE_PORT=5173`、`VITE_API_TIMEOUT=15000` |
 | `.env.development` | 开发 | `VITE_API_BASE_URL=/dev-api`、`VITE_API_PROXY_TARGET=http://localhost:3000` |
 | `.env.production` | 生产 | `VITE_API_BASE_URL=/prod-api`（按需替换为实际域名） |
+| `.env.staging` | 预发布 | 按实际环境配置 |
 
 > 开发环境通过 Vite 代理把 `/dev-api/*`、`/uploads/*` 转发到后端 `http://localhost:3000`，自动解决跨域。
 
@@ -318,9 +384,9 @@ web-admin/
 ### 环境要求
 
 - Node.js `^20.19.0 || >=22.12.0`
-- pnpm（推荐最新版）
+- pnpm（推荐最新版，需使用 hoisted 模式，见 `.npmrc`）
 - MySQL 8+（开发库默认 `sys_nest_server`）
-- Redis（默认 db=2）
+- Redis（默认 localhost:6379）
 
 ### 1. 初始化数据库
 
@@ -331,7 +397,7 @@ web-admin/
    mysql -u root -p sys_nest_server < server/sql/init.sql
    ```
 
-   或使用 Navicat / DBeaver 等工具执行 [`server/sql/init.sql`](server/sql/init.sql)。
+   或使用 Navicat / DBeaver 等工具执行 [`server/sql/init.sql`](server/sql/init.sql)。若需站内信功能，同时执行 [`server/sql/message.sql`](server/sql/message.sql)。
 
 ### 2. 启动后端
 
@@ -410,8 +476,28 @@ location /prod-api/ {
 
 ---
 
+## 更新日志
+
+### v1.0.2（2026-08-15）
+
+- **站内信实时推送升级为 SSE**：后端 `MessageSseService` 维护「用户 → 连接」注册表，发送站内信后主动推送 `new-message` 事件；前端以 `EventSource` 替代原 60s 轮询，收未读实时刷新并弹系统通知。
+- **权限按钮修复**：修复权限点缺失导致的按钮不显示与接口 4001 问题（补齐字典 / 字段分组等按钮权限点并绑定角色）。
+- **角色编码修复**：为 `sys_role` 补齐 `code` 字段（数据库 + 实体 + DTO + VO），编辑角色不再需要重复填写角色编码。
+- **账号强退**：禁用 / 删除用户时自动拉黑其全部在线 token，对方立即被踢下线并跳转登录页。
+- **权限缓存即时生效**：角色 / 菜单变更时清空用户权限缓存，缓存缺失时从数据库自动重建，权限变更无需重新登录。
+- **文档整合**：合并 server / web-admin 各目录 md 文档至根目录，统一为 v1.0.2。
+
+### v1.0.1
+
+- 站内信精简版（定向 / 全员发送、收件箱未读 / 已读 / 删除、顶部未读铃铛）。
+
+### v1.0.0
+
+- 初始版本：RBAC 权限体系、用户 / 角色 / 菜单管理、字典、参数配置、通知公告、定时任务、操作 / 登录日志、在线用户、缓存监控、服务监控、文件日志、深色主题。
+
+---
+
 ## 相关文档
 
 - 后端接口开发规范：[`server/Prompt/后台一般标准页的api规范.txt`](server/Prompt/后台一般标准页的api规范.txt)
 - 前端标准页生成规范：[`web-admin/Prompt/一般标准页.txt`](web-admin/Prompt/一般标准页.txt)
-- 后端目录结构说明：[`server/src/README_STRUCTURE.md`](server/src/README_STRUCTURE.md)

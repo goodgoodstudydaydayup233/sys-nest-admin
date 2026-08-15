@@ -51,6 +51,19 @@ upload:
   # 单文件最大大小 (MB)
   maxSize: 10
 
+# 文件日志配置
+fileLog:
+  # 是否启用文件日志（关闭后日志仅输出到控制台）
+  enabled: true
+  # 日志根目录（相对项目根目录或绝对路径），自动按分类创建子目录：access/app/error
+  dir: ./logs
+  # 单份日志文件大小上限 (MB)，超出后自动滚动生成新文件
+  maxFileSize: 10
+  # 日志总大小上限 (MB)，超出后自动清理最旧的日志文件（始终保留当前正在写入的文件）
+  maxTotalSize: 512
+  # 是否记录访问日志（所有 HTTP 请求的方法/路径/状态码/IP/耗时等）
+  accessEnabled: true
+
 # 数据库配置
 database:
   type: mysql
@@ -91,6 +104,8 @@ whitelist:
     - /dev-api/auth/login
     - /dev-api/auth/refresh
     - /dev-api/captcha
+    # SSE 长连接：EventSource 无法携带 Authorization 头，token 通过 query 传递并在端点内手动校验
+    - /dev-api/system/message/sse
   # 不需要认证的前缀
   prefixes:
     - /api

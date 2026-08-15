@@ -1,6 +1,6 @@
 {
   "name": "sys-nest-admin",
-  "version": "0.0.1",
+  "version": "1.0.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -36,6 +36,7 @@
     "@types/express": "^5.0.6",
     "@types/jsdom": "^28.0.1",
     "@types/node": "^24.12.2",
+    "@types/nprogress": "^0.2.3",
     "@vitejs/plugin-vue": "^6.0.6",
     "@vitejs/plugin-vue-jsx": "^5.1.5",
     "@vitest/eslint-plugin": "^1.6.16",

@@ -73,6 +73,23 @@ export class RedisService {
     await this.del(key);
   }
 
+  /**
+   * 清空所有用户信息缓存
+   * @description 角色/菜单权限变更时调用，使所有已登录用户的权限即时失效（下次请求重新生成）
+   * 使用 SCAN 避免 keys 命令在大 key 量下阻塞 Redis
+   */
+  async clearAllUserCache(): Promise<void> {
+    const { prefix } = this.configService.redisKeys.user;
+    let cursor = '0';
+    do {
+      const [next, batch] = await this.redis.scan(cursor, 'MATCH', `${prefix}*`, 'COUNT', 200);
+      cursor = next;
+      if (batch.length > 0) {
+        await this.redis.del(...batch);
+      }
+    } while (cursor !== '0');
+  }
+
   // ==================== 验证码 ====================
 
   async setCaptcha(captchaKey: string, code: string): Promise<void> {

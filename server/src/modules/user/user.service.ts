@@ -37,6 +37,14 @@ export class UserService {
     return this.userRepository.findByUsername(username);
   }
 
+  /**
+   * 按 ID 加载用户及其角色、角色菜单
+   * @description 供认证服务在用户信息缓存缺失时重建权限使用
+   */
+  async findByIdWithRolesMenus(id: number) {
+    return this.userRepository.findByIdWithRolesMenus(id);
+  }
+
   async findAll(query: QueryUserDto): Promise<UserListVo> {
     const { list, total } = await this.userRepository.findAll(query);
 
@@ -108,20 +116,29 @@ export class UserService {
     const user = await this.userRepository.update(id, updateData);
     if (user) {
       await this.syncUserCache(id, user);
+      // 账号被禁用：强制该用户所有在线会话下线（拉黑 token + 清缓存），使其下次请求跳转登录页
+      if (userData.status === '0') {
+        await this.authCacheService.forceLogoutUser(id);
+      }
     }
     return user ? this.toUserVo(user) : null;
   }
 
   async remove(id: number): Promise<void> {
     await this.assertNotSuperAdmin(id, '删除');
-    return this.userRepository.remove(id);
+    await this.userRepository.remove(id);
+    // 用户被删除：强制其在线会话下线，避免残留会话继续访问
+    await this.authCacheService.forceLogoutUser(id);
   }
 
   async batchRemove(ids: number[]): Promise<void> {
     for (const id of ids) {
       await this.assertNotSuperAdmin(id, '删除');
     }
-    return this.userRepository.batchRemove(ids);
+    await this.userRepository.batchRemove(ids);
+    for (const id of ids) {
+      await this.authCacheService.forceLogoutUser(id);
+    }
   }
 
   async changePassword(id: number, oldPassword: string, newPassword: string): Promise<void> {

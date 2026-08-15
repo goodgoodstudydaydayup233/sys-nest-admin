@@ -16,6 +16,9 @@ export class RoleVo extends BaseVo {
   @ApiProperty({ description: '角色名称' })
   name: string;
 
+  @ApiProperty({ description: '角色编码' })
+  code: string;
+
   @ApiPropertyOptional({ description: '权限标识' })
   permission?: string;
 

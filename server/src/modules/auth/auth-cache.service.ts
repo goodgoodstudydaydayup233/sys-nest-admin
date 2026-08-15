@@ -25,6 +25,14 @@ export class AuthCacheService {
   }
 
   /**
+   * 清空所有用户信息缓存
+   * @description 角色/菜单权限变更后调用，使全部在线用户的权限即时刷新（不依赖 24h 过期）
+   */
+  async clearAllUserCache(): Promise<void> {
+    return this.redisService.clearAllUserCache();
+  }
+
+  /**
    * 将 token 加入黑名单
    * @param token JWT token
    * @param ttl 黑名单存活时间（秒），通常设为 token 剩余有效期
@@ -142,5 +150,29 @@ export class AuthCacheService {
   async scanOnlineUsers(): Promise<OnlineUserVo[]> {
     const list = await this.redisService.scanOnlineUsers();
     return list.map((item) => ({ ...(JSON.parse(item.data) as OnlineUserVo), token: item.token }));
+  }
+
+  /**
+   * 强制下线用户（强退）
+   * @description 账号被禁用/删除时调用：将该用户所有在线 token 加入黑名单、
+   * 移除在线记录并清除用户缓存，使其正在使用的会话立即失效。
+   * 对方下一次请求将因 token 黑名单返回 401 → 前端刷新 token 失败 → 自动跳转登录页。
+   * @param userId 目标用户ID
+   * @returns 被强制下线的会话数量
+   */
+  async forceLogoutUser(userId: number): Promise<number> {
+    const onlineUsers = await this.scanOnlineUsers();
+    let count = 0;
+    for (const item of onlineUsers) {
+      if (item.userId === userId) {
+        // 加入 token 黑名单：默认 TTL 覆盖 token 剩余有效期，token 过期后黑名单 key 自动清除
+        await this.addToTokenBlacklist(item.tokenId);
+        await this.removeOnlineUser(item.tokenId);
+        count++;
+      }
+    }
+    // 清除用户权限缓存，避免缓存命中后仍可访问接口
+    await this.removeUserCache(userId);
+    return count;
   }
 }

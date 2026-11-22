@@ -80,7 +80,7 @@ interface RefreshState {
 const REQUEST_TIMEOUT = 15000
 
 /** Token 刷新接口地址 */
-const REFRESH_TOKEN_URL = '/auth/refresh-token'
+const REFRESH_TOKEN_URL = '/auth/refresh'
 
 // ==================== 状态管理 ====================
 

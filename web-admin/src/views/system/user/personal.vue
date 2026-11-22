@@ -32,7 +32,7 @@
             <li>
               <el-icon><UserFilled /></el-icon>
               <span class="label">角色</span>
-              <span class="value">{{ userStore.roles.join('、') || '-' }}</span>
+              <span class="value">{{ userStore.roles.map((role) => role.name).join('、') || '-' }}</span>
             </li>
           </ul>
         </el-card>

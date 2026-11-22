@@ -48,7 +48,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 
       proxy: {
         '/dev-api': {
-          target: env.VITE_API_PROXY_TARGET || 'http://localhost:3000',
+          target: env.VITE_API_PROXY_TARGET || 'http://localhost:3100',
           changeOrigin: true,
           configure: (proxy, options) => {
             proxy.on('error', (err) => {
@@ -62,7 +62,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           },
         },
         '/uploads': {
-          target: env.VITE_API_PROXY_TARGET || 'http://localhost:3000',
+          target: env.VITE_API_PROXY_TARGET || 'http://localhost:3100',
           changeOrigin: true,
         },
       },

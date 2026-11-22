@@ -87,7 +87,7 @@ export default config
  *
  * @example
  * ```typescript
- * getApiUrl('/user/list') // 开发环境: http://localhost:3000/dev-api/user/list
+ * getApiUrl('/user/list') // 开发环境: http://localhost:3100/dev-api/user/list
  * getApiUrl('/user/list') // 生产环境: /prod-api/user/list
  * ```
  */

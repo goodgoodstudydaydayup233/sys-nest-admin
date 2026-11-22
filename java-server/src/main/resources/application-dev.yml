@@ -1,0 +1,27 @@
+# 开发环境配置
+server:
+  servlet:
+    context-path: /dev-api
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/sys_nest_server?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: '123456'
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ''
+      # 与 Nest 端 db 1 隔离，避免互相覆盖缓存
+      database: 2
+
+mybatis-plus:
+  configuration:
+    # 开发时把 SQL 打印到控制台，方便排查
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+app:
+  swagger:
+    server-url: http://localhost:3100/dev-api

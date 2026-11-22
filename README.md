@@ -1,9 +1,14 @@
 # sys-nest-admin
 
-一个基于 **NestJS + Vue 3** 的通用后台管理系统，采用前后端分离架构，内置用户、角色、菜单、字典、参数配置、通知公告、站内信、定时任务、操作/登录日志、在线用户、缓存监控、服务监控、文件日志等常用后台能力。
+一个同时提供 **NestJS** 与 **Spring Boot** 两套等效后端的通用后台管理系统，前端基于 **Vue 3**，采用前后端分离架构。内置用户、角色、菜单、字典、参数配置、通知公告、站内信、定时任务、操作/登录日志、在线用户、缓存监控、服务监控、文件日志等常用后台能力。
 
-- 当前版本：**v1.0.2**
-- 技术体系：NestJS 11 + TypeORM + MySQL + Redis + Vue 3.5 + Vite 8 + Element Plus + Pinia + TypeScript
+- 当前版本：**v1.1.0**
+- 技术体系：Vue 3.5 + Vite 8 + Element Plus + Pinia + TypeScript
+- 后端可选：
+  - `node-server`：NestJS 11 + TypeORM + MySQL + Redis
+  - `java-server`：Spring Boot 3.3.5 + MyBatis-Plus + MySQL + Redis
+
+两套后端接口路径、入参、返回字段、权限串和错误码保持一致，前端无需改代码即可切换。
 
 ## 项目演示
 
@@ -17,12 +22,14 @@
   - [首页](#首页)
 - [功能特性](#功能特性)
 - [技术栈](#技术栈)
-  - [后端（server）](#后端server)
+  - [后端（node-server / NestJS）](#后端node-server--nestjs)
+  - [后端（java-server / Spring Boot）](#后端java-server--spring-boot)
   - [前端（web-admin）](#前端web-admin)
 - [项目结构](#项目结构)
-  - [后端目录结构](#后端目录结构)
+  - [NestJS 后端目录结构](#nestjs-后端目录结构)
+  - [Spring Boot 后端目录结构](#spring-boot-后端目录结构)
   - [前端目录结构](#前端目录结构)
-- [后端规范](#后端规范)
+- [NestJS 后端规范](#nestjs-后端规范)
   - [全局约定](#全局约定)
   - [命名与分层](#命名与分层)
   - [权限标识](#权限标识)
@@ -43,7 +50,7 @@
   - [2. 启动后端](#2-启动后端)
   - [3. 启动前端](#3-启动前端)
   - [前端打包](#前端打包)
-  - [4. 同时运行](#4-同时运行)
+  - [4. 同时运行前后端](#4-同时运行前后端)
 - [默认账号](#默认账号)
 - [更新日志](#更新日志)
 - [相关文档](#相关文档)
@@ -63,7 +70,7 @@
 
 ## 技术栈
 
-### 后端（server）
+### 后端（node-server / NestJS）
 
 | 分类 | 技术 |
 | --- | --- |
@@ -71,7 +78,7 @@
 | 语言 | TypeScript 5.7 |
 | ORM | TypeORM 0.3 |
 | 数据库 | MySQL 8+ |
-| 缓存 | Redis（ioredis） |
+| 缓存 | Redis（ioredis，db 1） |
 | 认证 | Passport + JWT（双 Token：access / refresh） |
 | 接口文档 | Swagger（swagger-ui-express） |
 | 校验 | class-validator + class-transformer |
@@ -81,6 +88,27 @@
 | 服务监控 | systeminformation |
 | 实时推送 | SSE（Server-Sent Events，EventSource） |
 | 包管理 | pnpm |
+
+### 后端（java-server / Spring Boot）
+
+| 分类 | 技术 |
+| --- | --- |
+| 框架 | Spring Boot 3.3.5 |
+| 语言 | Java 17 |
+| 持久层 | MyBatis-Plus 3.5.7 |
+| 数据库 | MySQL 8+ |
+| 缓存 | Spring Data Redis（db 2，统一 `java:` 前缀） |
+| 认证 | Spring Security + JJWT（双 Token：access / refresh） |
+| 接口文档 | springdoc-openapi |
+| 校验 | Jakarta Validation |
+| 密码加密 | BCrypt |
+| 验证码 | 自绘图形验证码（Base64） |
+| 定时任务 | Spring Scheduling（动态 cron） |
+| 服务监控 | JDK MXBean |
+| 实时推送 | SseEmitter |
+| 构建 | Maven |
+
+> 两套后端的错误码、统一响应 `{ code, msg, data }`、分页结构 `{ list, total, page, pageSize }`、权限串完全一致。
 
 ### 前端（web-admin）
 
@@ -103,23 +131,23 @@
 
 ```
 nest-admin/
-├── server/                # 后端服务（NestJS）
+├── node-server/           # NestJS 后端（端口 3100）
+├── java-server/           # Spring Boot 后端（端口 3100，与 NestJS 版二选一启动）
 ├── web-admin/             # 前端应用（Vue 3 + Vite）
 ├── 演示/                  # 项目演示截图
 ├── README.md              # 项目文档（本文档）
 └── LICENSE
 ```
 
-### 后端目录结构
+### NestJS 后端目录结构
 
 ```
-server/
+node-server/
 ├── config/                       # 环境配置
 │   ├── development.yml           # 开发环境配置（前缀 dev-api、synchronize: true）
 │   └── production.yml            # 生产环境配置（前缀 prod-api、synchronize: false）
 ├── sql/
-│   ├── init.sql                  # 数据库初始化脚本（表结构 + 初始数据）
-│   └── message.sql               # 站内信相关表结构
+│   └── init.sql                  # 数据库初始化脚本（全量表结构 + 初始数据，含站内信）
 ├── src/
 │   ├── common/                   # 公共模块
 │   │   ├── decorators/           # 自定义装饰器（@Permission / @Log / @Roles / @User / @RateLimiter）
@@ -176,6 +204,38 @@ modules/{module}/
 └── {module}.module.ts       # 模块定义
 ```
 
+### Spring Boot 后端目录结构
+
+```
+java-server/
+├── pom.xml                            # Maven 依赖（相当于 package.json）
+├── sql/
+│   └── init.sql                       # 与 node-server/sql/init.sql 完全一致的初始化脚本
+├── 功能清单.md                        # 对照 node-server 的 202 项迁移进度表
+├── 知识点.md                          # 技术点说明（与 NestJS 逐项对照）
+└── src/main/
+    ├── java/com/sysnest/admin/
+    │   ├── SysNestAdminApplication.java  # 启动类（main.ts + app.module.ts）
+    │   ├── common/                       # 统一响应、异常、错误码、限流、日志、上传、SSE、调度
+    │   ├── config/                       # AppProperties、MyBatis-Plus、Redis、WebMvc、springdoc
+    │   ├── security/                     # JWT 过滤器、双 Token、权限校验、黑名单
+    │   └── modules/                      # 业务模块（controller/service/mapper/entity/dto/vo）
+    │       ├── auth/                     # 认证
+    │       ├── captcha/                  # 验证码
+    │       ├── user/ role/ menu/         # 用户 / 角色 / 菜单
+    │       ├── dict/ config/             # 字典 / 参数配置
+    │       ├── notice/ message/          # 通知公告 / 站内信（含 SSE）
+    │       ├── job/ log/ filelog/        # 定时任务 / 操作与登录日志 / 文件日志
+    │       └── cache/ online/ server/    # 缓存监控 / 在线用户 / 服务监控
+    └── resources/
+        ├── application.yml               # 公共配置（端口、MyBatis-Plus、JWT、白名单）
+        ├── application-dev.yml           # 开发环境（/dev-api、Redis db 2）
+        ├── application-prod.yml          # 生产环境（/prod-api、环境变量）
+        └── logback-spring.xml            # 文件日志（logs/app、logs/error、logs/access）
+```
+
+> 两套后端使用同一套 MySQL 表结构与初始数据。Java 端使用 Redis db 2 和 `java:` 键前缀，与 NestJS 端（db 1）互不干扰；两端默认端口相同，采用二选一启动，切换时不会串用缓存。
+
 ### 前端目录结构
 
 ```
@@ -227,9 +287,10 @@ web-admin/
 
 ---
 
-## 后端规范
+## NestJS 后端规范
 
-> 完整规范见 [`server/Prompt/后台一般标准页的api规范.txt`](server/Prompt/后台一般标准页的api规范.txt)，以下为要点摘录。
+> 完整规范见 [`node-server/Prompt/后台一般标准页的api规范.txt`](node-server/Prompt/后台一般标准页的api规范.txt)，以下为要点摘录。
+> Spring Boot 端在接口路径、入参、返回字段、权限串、错误码上与本文保持一致，技术实现差异见 [`java-server/知识点.md`](java-server/知识点.md)。
 
 ### 全局约定
 
@@ -246,8 +307,10 @@ web-admin/
   { "code": 1001, "msg": "错误信息", "data": null }
   ```
 
-- **Swagger 文档**：启动后访问 `http://localhost:3000/api`，JSON 可导入 Apifox：`http://localhost:3000/api-json`。
-  - Servers 展示完整地址（含环境前缀，如 `http://localhost:3000/dev-api`）
+- **Swagger 文档**：
+  - NestJS：`http://localhost:3100/api`，JSON 可导入 Apifox：`http://localhost:3100/api-json`
+  - Spring Boot：`http://localhost:3100/dev-api/swagger-ui.html`，JSON：`http://localhost:3100/dev-api/v3/api-docs`
+  - Servers 展示完整地址（含环境前缀，如 `http://localhost:3100/dev-api`）
   - 接口路径仅展示模块级路径（不带前缀）
 
 ### 命名与分层
@@ -271,7 +334,7 @@ web-admin/
 
 ### 错误码
 
-按业务分段，详见 [`server/src/common/enums/error-code.enum.ts`](server/src/common/enums/error-code.enum.ts)：
+按业务分段，详见 [`node-server/src/common/enums/error-code.enum.ts`](node-server/src/common/enums/error-code.enum.ts) 与 [`java-server` 的 `ErrorCode.java`](java-server/src/main/java/com/sysnest/admin/common/enums/ErrorCode.java)：
 
 - `200` 成功 / `4xx` HTTP 异常 / `5xx` 服务异常
 - `1xxx` 用户相关 / `2xxx` 验证码 / `3xxx` Token / `4xxx` 权限 / `5xxx` 参数 / `6xxx` 配置
@@ -280,13 +343,13 @@ web-admin/
 
 ### 配置说明
 
-开发环境配置 [`server/config/development.yml`](server/config/development.yml) 关键项：
+开发环境配置 [`node-server/config/development.yml`](node-server/config/development.yml) 关键项（Java 端对应 [`application-dev.yml`](java-server/src/main/resources/application-dev.yml)，默认端口同为 3100、Redis 使用 db 2）：
 
 | 配置项 | 默认值 | 说明 |
 | --- | --- | --- |
-| `server.port` | 3000 | 后端端口 |
+| `server.port` | 3100 | 后端端口 |
 | `app.apiPrefix` | dev-api（开发）/ prod-api（生产） | 全局接口前缀 |
-| `swagger.serverUrl` | `http://localhost:3000/dev-api` / `https://nest-admin.dooring.vip/prod-api` | Swagger Servers 展示地址，包含环境前缀 |
+| `swagger.serverUrl` | `http://localhost:3100/dev-api` / `https://nest-admin.dooring.vip/prod-api` | Swagger Servers 展示地址，包含环境前缀 |
 | `database` | localhost:3306 / sys_nest_server | MySQL 连接，开发环境 `synchronize: true` |
 | `redis` | localhost:6379 | Redis 连接 |
 | `redisKeys.user.expiresIn` | 86400 | 用户权限缓存 TTL（24h） |
@@ -371,11 +434,11 @@ web-admin/
 | 文件 | 用途 | 关键变量 |
 | --- | --- | --- |
 | `.env` | 公共配置 | `VITE_PORT=5173`、`VITE_API_TIMEOUT=15000` |
-| `.env.development` | 开发 | `VITE_API_BASE_URL=/dev-api`、`VITE_API_PROXY_TARGET=http://localhost:3000` |
+| `.env.development` | 开发 | `VITE_API_BASE_URL=/dev-api`、`VITE_API_PROXY_TARGET=http://localhost:3100`（两套后端通用） |
 | `.env.production` | 生产 | `VITE_API_BASE_URL=/prod-api`（按需替换为实际域名） |
 | `.env.staging` | 预发布 | 按实际环境配置 |
 
-> 开发环境通过 Vite 代理把 `/dev-api/*`、`/uploads/*` 转发到后端 `http://localhost:3000`，自动解决跨域。
+> 开发环境通过 Vite 代理把 `/dev-api/*`、`/uploads/*` 转发到 `http://localhost:3100`。NestJS 与 Spring Boot 默认都使用 3100，二选一启动即可，前端无需改配置。
 
 ---
 
@@ -387,22 +450,29 @@ web-admin/
 - pnpm（推荐最新版，需使用 hoisted 模式，见 `.npmrc`）
 - MySQL 8+（开发库默认 `sys_nest_server`）
 - Redis（默认 localhost:6379）
+- 仅运行 `java-server` 时额外需要：JDK 17、Maven 3.9+
 
 ### 1. 初始化数据库
 
 1. 创建数据库 `sys_nest_server`（utf8mb4）。
-2. 导入初始化脚本：
+2. 导入初始化脚本（两套后端的 SQL 完全一致，任选其一）：
 
    ```bash
-   mysql -u root -p sys_nest_server < server/sql/init.sql
+   # NestJS 后端
+   mysql -u root -p sys_nest_server < node-server/sql/init.sql
+
+   # 或 Spring Boot 后端
+   mysql -u root -p sys_nest_server < java-server/sql/init.sql
    ```
 
-   或使用 Navicat / DBeaver 等工具执行 [`server/sql/init.sql`](server/sql/init.sql)。若需站内信功能，同时执行 [`server/sql/message.sql`](server/sql/message.sql)。
+   也可使用 Navicat / DBeaver 等工具执行 [`node-server/sql/init.sql`](node-server/sql/init.sql) 或 [`java-server/sql/init.sql`](java-server/sql/init.sql)（已包含站内信表与菜单数据，无需额外脚本）。
 
-### 2. 启动后端
+### 2. 启动后端（二选一，默认端口都是 3100）
+
+**方式 A：NestJS（3100）**
 
 ```bash
-cd server
+cd node-server
 
 # 安装依赖
 pnpm install
@@ -410,18 +480,42 @@ pnpm install
 # 按需修改配置（数据库账号密码、Redis 等）
 # 编辑 config/development.yml
 
-# 开发模式启动（默认监听 3000 端口）
+# 开发模式启动（默认监听 3100 端口）
 pnpm dev
 ```
 
 启动成功后：
 
-- 接口地址：`http://localhost:3000/dev-api`（开发环境前缀）
-- Swagger 文档：`http://localhost:3000/api`
-  - Servers 展示：`http://localhost:3000/dev-api`
+- 接口地址：`http://localhost:3100/dev-api`
+- Swagger 文档：`http://localhost:3100/api`
+  - Servers 展示：`http://localhost:3100/dev-api`
   - 接口路径展示：仅模块路径，不带 `/dev-api` 前缀
 
 > 生产构建：`pnpm build` → `pnpm start:prod`（需先修改 `config/production.yml`，注意 `synchronize: false`）。
+
+**方式 B：Spring Boot（3100）**
+
+```bash
+cd java-server
+
+# 按需修改数据库 / Redis / JWT 配置
+# 编辑 src/main/resources/application-dev.yml
+
+# 编译打包
+mvn -B -DskipTests clean package
+
+# 启动（默认 3100 端口，接口前缀 /dev-api）
+java -jar target/sys-nest-java-server-1.0.0-SNAPSHOT.jar
+```
+
+启动成功后：
+
+- 接口地址：`http://localhost:3100/dev-api`
+- Swagger 文档：`http://localhost:3100/dev-api/swagger-ui.html`
+- OpenAPI JSON：`http://localhost:3100/dev-api/v3/api-docs`
+
+> 生产环境使用 `--spring.profiles.active=prod`，接口前缀为 `/prod-api`，数据库/Redis/JWT 均支持环境变量覆盖。
+> 两套后端默认端口相同，**二选一启动**；数据表共用，Redis 通过 db 号与 `java:` 键前缀隔离，切换后端不会串用缓存。
 
 ### 3. 启动前端
 
@@ -436,6 +530,8 @@ pnpm dev
 ```
 
 访问 `http://localhost:5173` 即可使用。
+
+> 前端默认代理到 `http://localhost:3100`。两套后端默认都监听 3100，二选一启动后页面代码和代理配置都无需修改。
 
 ### 前端打包
 
@@ -452,7 +548,8 @@ pnpm dev
 
 ```nginx
 location /prod-api/ {
-    proxy_pass http://localhost:3000/prod-api/;
+    # NestJS / Spring Boot 默认都是 3100，二选一启动
+    proxy_pass http://localhost:3100/prod-api/;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
 }
@@ -460,9 +557,9 @@ location /prod-api/ {
 
 > 生产环境 `VITE_API_BASE_URL` 也可改为完整域名（如 `https://api.yourdomain.com/prod-api`），具体取决于部署方式。
 
-### 4. 同时运行
+### 4. 同时运行前后端
 
-前后端分别位于 `server/` 与 `web-admin/`，开发时需各开一个终端分别执行 `pnpm dev`。前端已配置代理，请求 `/dev-api/*` 会自动转发到后端 3000 端口，无需额外处理跨域。
+前后端分别位于 `node-server/`（或 `java-server/`）与 `web-admin/`，开发时需各开一个终端分别执行启动命令。两套后端默认都监听 3100，**二选一启动**；前端代理固定为 `/dev-api → http://localhost:3100`，无需切换。
 
 ---
 
@@ -472,11 +569,19 @@ location /prod-api/ {
 | --- | --- | --- |
 | admin | 123456 | 超级管理员，跳过所有权限校验 |
 
-> 出于安全考虑，部署到生产环境前请务必修改默认密码与 JWT 密钥（`config/production.yml`）。
+> 出于安全考虑，部署到生产环境前请务必修改默认密码与 JWT 密钥（NestJS：`node-server/config/production.yml`；Spring Boot：`java-server/src/main/resources/application-prod.yml` 或对应环境变量）。
 
 ---
 
 ## 更新日志
+
+### v1.1.0（2026-11-22）
+
+- **新增 Spring Boot 等效后端 `java-server`**：Spring Boot 3.3.5 + MyBatis-Plus + Spring Security + JJWT，默认端口 3100（与 NestJS 版二选一启动）、接口前缀 `/dev-api`，生产环境 `/prod-api`。
+- **接口全量对齐**：认证、验证码、用户、角色、菜单、字典、参数配置、通知公告、站内信（SSE）、定时任务、操作/登录日志、在线用户、缓存监控、服务监控、文件日志全部完成，权限串、错误码、返回结构与 NestJS 端一致。
+- **数据与缓存隔离**：两套后端共用 `init.sql`；Java 端使用 Redis db 2 与 `java:` 键前缀，切换后端时不会串用缓存。
+- **测试与验收**：新增 24 个 JUnit 5 / MockMvc 测试；前端默认 3100 代理下登录、仪表盘与全部监控页面联调通过；prod profile 环境变量启动验证通过。
+- **文档**：新增 `java-server/功能清单.md`（202/202）与 `java-server/知识点.md`；首页技术栈补充 Spring Boot 说明；`java-server/sql/init.sql` 与 NestJS 端保持一致。
 
 ### v1.0.2（2026-08-15）
 
@@ -499,5 +604,7 @@ location /prod-api/ {
 
 ## 相关文档
 
-- 后端接口开发规范：[`server/Prompt/后台一般标准页的api规范.txt`](server/Prompt/后台一般标准页的api规范.txt)
+- NestJS 后端接口开发规范：[`node-server/Prompt/后台一般标准页的api规范.txt`](node-server/Prompt/后台一般标准页的api规范.txt)
 - 前端标准页生成规范：[`web-admin/Prompt/一般标准页.txt`](web-admin/Prompt/一般标准页.txt)
+- Spring Boot 迁移进度：[`java-server/功能清单.md`](java-server/功能清单.md)
+- Spring Boot 技术点与 NestJS 对照：[`java-server/知识点.md`](java-server/知识点.md)

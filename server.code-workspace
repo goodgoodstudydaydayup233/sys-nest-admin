@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": "web-admin"
+		},
+		{
+			"path": "java-server"
+		},
+		{
+			"path": "node-server"
+		}
+	],
+	"settings": {
+		"java.configuration.runtimes": [
+			{
+				"name": "JavaSE-21",
+				"path": "C:\\Users\\琴酒/.jdks/corretto-21.0.11",
+				"default": true
+			},
+			{
+				"name": "JavaSE-17",
+				"path": "E:\\compileCode\\java\\jdk17"
+			}
+		]
+	},
+	"trae": {
+		"workspaceId": "3eb776c01ea08a22e1be1ee547c8fc6c"
+	}
+}

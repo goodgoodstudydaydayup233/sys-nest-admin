@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "kind": "setting",
+      "key": "java.configuration.runtimes",
+      "scope": "workspace",
+      "at": "2026-11-21T03:28:28.908Z"
+    }
+  ]
+}

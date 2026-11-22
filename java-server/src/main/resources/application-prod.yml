@@ -1,0 +1,24 @@
+# 生产环境配置：敏感信息优先读环境变量
+server:
+  servlet:
+    context-path: /prod-api
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:sys_nest_server}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:123456}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:2}
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:sys-nest-jwt-secret-java-prod-change-this}
+    refresh-secret: ${JWT_REFRESH_SECRET:sys-nest-jwt-refresh-secret-java-prod-change}
+  swagger:
+    server-url: ${APP_SERVER_URL:http://localhost:3100/prod-api}

@@ -5,7 +5,9 @@
       <div class="welcome-content">
         <div class="welcome-text">
           <h1 class="welcome-title">👋 欢迎使用 {{ appTitle }}</h1>
-          <p class="welcome-desc">基于 Vue 3 + Vite + Element Plus 的后台管理系统</p>
+          <p class="welcome-desc">
+            基于 Vue 3 + NestJS / Spring Boot 双后端实现的通用后台管理系统
+          </p>
           <div class="welcome-meta">
             <el-tag effect="dark" round>v{{ appVersion }}</el-tag>
             <el-tag effect="plain" round type="success">前后端分离</el-tag>
@@ -52,8 +54,8 @@
         </div>
       </template>
       <el-row :gutter="20">
-        <!-- 后端技术栈 -->
-        <el-col :xs="24" :md="12">
+        <!-- NestJS 后端技术栈 -->
+        <el-col :xs="24" :md="8">
           <div class="tech-section">
             <div class="tech-section-title">
               <span class="tech-badge backend">后端</span>
@@ -91,8 +93,48 @@
             </ul>
           </div>
         </el-col>
+        <!-- Spring Boot 后端技术栈 -->
+        <el-col :xs="24" :md="8">
+          <div class="tech-section">
+            <div class="tech-section-title">
+              <span class="tech-badge java">后端</span>
+              <span class="tech-subtitle">Spring Boot 3.3.5</span>
+            </div>
+            <ul class="tech-list">
+              <li><span class="tech-name">框架</span><span class="tech-value">Spring Boot 3.3.5</span></li>
+              <li><span class="tech-name">语言</span><span class="tech-value">Java 17</span></li>
+              <li>
+                <span class="tech-name">持久层</span
+                ><span class="tech-value">MyBatis-Plus 3.5.7</span>
+              </li>
+              <li><span class="tech-name">数据库</span><span class="tech-value">MySQL 8+</span></li>
+              <li>
+                <span class="tech-name">缓存</span
+                ><span class="tech-value">Redis（Spring Data Redis）</span>
+              </li>
+              <li>
+                <span class="tech-name">认证</span
+                ><span class="tech-value">Spring Security + JJWT（双 Token）</span>
+              </li>
+              <li>
+                <span class="tech-name">接口文档</span><span class="tech-value">springdoc-openapi</span>
+              </li>
+              <li>
+                <span class="tech-name">校验</span><span class="tech-value">Jakarta Validation</span>
+              </li>
+              <li>
+                <span class="tech-name">定时任务</span
+                ><span class="tech-value">Spring Scheduling</span>
+              </li>
+              <li>
+                <span class="tech-name">服务监控</span><span class="tech-value">JDK MXBean</span>
+              </li>
+              <li><span class="tech-name">密码加密</span><span class="tech-value">BCrypt</span></li>
+            </ul>
+          </div>
+        </el-col>
         <!-- 前端技术栈 -->
-        <el-col :xs="24" :md="12">
+        <el-col :xs="24" :md="8">
           <div class="tech-section">
             <div class="tech-section-title">
               <span class="tech-badge frontend">前端</span>
@@ -274,6 +316,10 @@ const openRepo = () => {
 
 .tech-badge.backend {
   background-color: var(--el-color-success);
+}
+
+.tech-badge.java {
+  background-color: var(--el-color-warning);
 }
 
 .tech-badge.frontend {

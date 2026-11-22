@@ -1,0 +1,88 @@
+# 公共配置：所有环境共用
+server:
+  port: 3100
+
+spring:
+  application:
+    name: sys-nest-java-server
+  profiles:
+    # 默认开发环境，可用 --spring.profiles.active=prod 临时切换
+    active: dev
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+mybatis-plus:
+  # 复杂 SQL 写在 resources/mapper/**/*.xml
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.sysnest.admin.modules
+  configuration:
+    # 数据库下划线列名自动映射到 Java 驼峰字段
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleteStatus
+      logic-delete-value: '1'
+      logic-not-delete-value: '0'
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+app:
+  # 超级管理员用户名，跳过权限校验
+  admin: admin
+  redis:
+    # 所有缓存键的统一前缀，避免与 Nest 端（db 1）的键互相覆盖
+    key-prefix: 'java:'
+  rate-limit:
+    # 是否启用限流
+    enabled: true
+    # 全局总请求数限流
+    global:
+      time: 60
+      count: 5000
+    # 单 IP 全局限流
+    ip:
+      time: 60
+      count: 10000
+    # 默认维度：已登录按“用户 + 接口”，未登录按“IP + 接口”
+    default-rule:
+      time: 60
+      count: 100
+  jwt:
+    # HS256 要求密钥至少 32 字节
+    secret: sys-nest-jwt-secret-java-dev-2026-0001
+    refresh-secret: sys-nest-jwt-refresh-secret-java-dev-2026-02
+    access-token-expire: 2h
+    refresh-token-expire: 7d
+  upload:
+    path: ./uploads
+    max-size: 10MB
+  security:
+    # 白名单路径相对于 context-path（/dev-api），不要重复写前缀
+    whitelist:
+      - /auth/login
+      - /auth/refresh
+      - /captcha
+      - /system/message/sse
+      - /uploads/**
+      - /swagger-ui/**
+      - /swagger-ui.html
+      - /v3/api-docs/**
+      - /error
+  swagger:
+    title: sys-nest-admin API
+    description: sys-nest-admin 后台管理系统接口文档
+    version: 1.0.0
+    server-url: http://localhost:3100/dev-api
+  file-log:
+    # 日志根目录，logback 与文件日志查询接口共用
+    dir: ./logs

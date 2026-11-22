@@ -103,7 +103,7 @@ async function handleDiagnose() {
   diagnosisResults.value = [
     { message: '正在检测本地网络...', success: true },
     { message: 'DNS 解析正常', success: true },
-    { message: '无法连接到服务器 (http://localhost:3000)', success: false },
+    { message: '无法连接到服务器 (http://localhost:3100)', success: false },
     { message: '建议检查后端服务是否启动', success: false },
   ]
 }

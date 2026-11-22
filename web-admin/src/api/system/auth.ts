@@ -61,6 +61,12 @@ export interface CaptchaResult {
   expire: number
 }
 
+/** 当前用户角色 */
+export interface UserRole {
+  id: number | string
+  name: string
+}
+
 /** 用户信息（自动解包）*/
 export interface UserInfo {
   /** 用户 ID */
@@ -78,7 +84,7 @@ export interface UserInfo {
   /** 性别: 0-男 1-女 3-未知 */
   sex?: string
   /** 角色列表 */
-  roles?: string[]
+  roles?: UserRole[]
   /** 权限标识列表 */
   permissions?: string[]
   /** 创建时间 */
@@ -165,7 +171,7 @@ export const authApi = {
    */
   refreshToken(refreshToken: string): Promise<TokenPair> {
     return http.post<TokenPair>({
-      url: '/auth/refresh-token',
+      url: '/auth/refresh',
       data: { refreshToken },
       skipAuth: true,
     })
